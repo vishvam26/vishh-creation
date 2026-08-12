@@ -61,6 +61,14 @@ export default function AdminDashboardPage() {
   const [artistName, setArtistName] = useState(artistProfile.name);
   const [artistBio, setArtistBio] = useState(artistProfile.bio);
 
+  // Dedicated Hero Showcase Banner Manager State
+  const [heroTitleInput, setHeroTitleInput] = useState(artistProfile.heroShowcase?.title || "");
+  const [heroPriceInput, setHeroPriceInput] = useState(artistProfile.heroShowcase?.price?.toString() || "");
+  const [heroCategoryInput, setHeroCategoryInput] = useState(artistProfile.heroShowcase?.category || "Original Paintings");
+  const [heroPhotoPreview, setHeroPhotoPreview] = useState(artistProfile.heroShowcase?.imageUrl || "");
+  const [heroInstaInput, setHeroInstaInput] = useState(artistProfile.heroShowcase?.instagramUrl || "");
+  const [isSavingHero, setIsSavingHero] = useState(false);
+
   // Instagram Link State
   const [instagramUrl, setInstagramUrl] = useState("");
   const [instaInfo, setInstaInfo] = useState<InstagramInfo | null>(null);
@@ -80,6 +88,14 @@ export default function AdminDashboardPage() {
     setArtistName(profile.name);
     setArtistBio(profile.bio);
     setArtistPhotoPreview(profile.photoUrl);
+
+    if (profile.heroShowcase) {
+      setHeroTitleInput(profile.heroShowcase.title || "");
+      setHeroPriceInput(profile.heroShowcase.price?.toString() || "");
+      setHeroCategoryInput(profile.heroShowcase.category || "Original Paintings");
+      setHeroPhotoPreview(profile.heroShowcase.imageUrl || "");
+      setHeroInstaInput(profile.heroShowcase.instagramUrl || "");
+    }
   };
 
   useEffect(() => {
@@ -256,6 +272,46 @@ export default function AdminDashboardPage() {
         setToastMsg({ type: "error", text: "Failed to delete item." });
       }
     }
+  };
+
+  const handleHeroPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const compressed = await validateAndCompressImage(file);
+      setHeroPhotoPreview(compressed);
+    } catch (err: any) {
+      setToastMsg({ type: "error", text: err.message || "Invalid image file" });
+    }
+  };
+
+  const handleSaveHeroShowcase = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!heroTitleInput.trim()) {
+      setToastMsg({ type: "error", text: "Please enter a title for the Hero Showcase Artwork" });
+      return;
+    }
+    setIsSavingHero(true);
+    let finalImage = heroPhotoPreview;
+    if (heroInstaInput.trim() && !finalImage) {
+      const info = extractInstagramInfo(heroInstaInput);
+      if (info?.proxyImageUrl) {
+        finalImage = info.proxyImageUrl;
+      }
+    }
+
+    const showcaseConfig: HeroShowcaseConfig = {
+      title: heroTitleInput.trim(),
+      category: heroCategoryInput,
+      price: Number(heroPriceInput) || 0,
+      imageUrl: finalImage,
+      instagramUrl: heroInstaInput.trim(),
+    };
+
+    await saveHeroShowcaseCloud(showcaseConfig);
+    setArtistProfileState((prev) => ({ ...prev, heroShowcase: showcaseConfig }));
+    setIsSavingHero(false);
+    setToastMsg({ type: "success", text: "✨ Top Hero Showcase Banner saved & published for all visitors globally!" });
   };
 
   // Logout
@@ -556,73 +612,161 @@ export default function AdminDashboardPage() {
             </form>
           </div>
 
-          {/* 🌟 Permanent Featured Hero Showcase Manager Box */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-amber-300 bg-amber-50/20 shadow-sm space-y-5 text-left">
-            <div className="flex items-center justify-between border-b border-amber-200 pb-3">
+          {/* 🖼️ Dedicated Top Hero Banner Showcase Upload Manager */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-[#567c8d] shadow-md space-y-5 text-left">
+            <div className="flex items-center justify-between border-b border-[#D8E3EC] pb-3">
               <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+                <ImageIcon className="w-5 h-5 text-[#567c8d]" />
                 <h2 className="font-heading text-lg font-bold text-[#182b3f]">
-                  Global Top Hero Showcase Manager
+                  Upload &amp; Manage Top Hero Banner Artwork
                 </h2>
               </div>
-              <span className="text-[11px] bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full shadow-sm">
+              <span className="text-[11px] bg-[#eef4f8] text-[#182b3f] font-extrabold px-3 py-1 rounded-full border border-[#D8E3EC]">
                 ✨ Displays on Front Page for ALL Visitors
               </span>
             </div>
 
             <p className="text-xs text-[#50606c] leading-relaxed">
-              Tap <strong>"SET HERO"</strong> on any artwork below to make it the <strong>Permanent Front Page Hero Showcase Artwork</strong> for all users globally:
+              Upload or fill in the details of the <strong>Top Hero Banner Artwork</strong> below. Whatever you save here will be displayed permanently at the top of your website for all users globally!
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[320px] overflow-y-auto pr-1">
-              {products.map((p) => {
-                const isSelectedHero = artistProfile.heroShowcase?.title === p.title || p.is_featured;
+            {/* Quick Fill from Uploaded Products Dropdown */}
+            {products.length > 0 && (
+              <div className="bg-[#f8fafc] p-3.5 rounded-2xl border border-[#e2e8f0]">
+                <label className="block text-[11px] font-bold text-[#182b3f] uppercase tracking-wider mb-1.5">
+                  ⚡ Quick Fill Details from Uploaded Paintings/Crochet:
+                </label>
+                <select
+                  onChange={(e) => {
+                    const selected = products.find((p) => p.id === e.target.value);
+                    if (selected) {
+                      setHeroTitleInput(selected.title);
+                      setHeroPriceInput(selected.price.toString());
+                      setHeroCategoryInput(selected.category);
+                      setHeroPhotoPreview(selected.image_url);
+                      setHeroInstaInput(selected.instagram_url || "");
+                    }
+                  }}
+                  className="w-full bg-white border border-[#cbd5e1] text-xs font-semibold text-[#182b3f] rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-[#567c8d]"
+                >
+                  <option value="">-- Choose a product to auto-fill inputs --</option>
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.title} - ₹{p.price.toLocaleString("en-IN")} ({p.category})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-                return (
-                  <div
-                    key={p.id}
-                    className={`p-3 rounded-2xl border text-left flex items-center justify-between gap-3 transition-all ${
-                      isSelectedHero
-                        ? "bg-amber-100/60 border-amber-400 ring-2 ring-amber-400/50 shadow-sm"
-                        : "bg-white border-[#D8E3EC] hover:bg-slate-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img src={p.image_url} alt={p.title} className="w-12 h-12 rounded-xl object-cover border border-[#D8E3EC]" />
-                      <div className="min-w-0">
-                        <div className="font-bold text-xs text-[#182b3f] truncate">{p.title}</div>
-                        <div className="text-[10px] text-amber-800 font-bold mt-0.5">₹{p.price.toLocaleString("en-IN")}</div>
-                      </div>
+            <form onSubmit={handleSaveHeroShowcase} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                    Hero Artwork Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={heroTitleInput}
+                    onChange={(e) => setHeroTitleInput(e.target.value)}
+                    placeholder="e.g. Radhe Shyam!!"
+                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                    Price (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={heroPriceInput}
+                    onChange={(e) => setHeroPriceInput(e.target.value)}
+                    placeholder="e.g. 499986"
+                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                  Category *
+                </label>
+                <select
+                  value={heroCategoryInput}
+                  onChange={(e) => setHeroCategoryInput(e.target.value)}
+                  className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                >
+                  <option value="Original Paintings">Original Paintings</option>
+                  <option value="Crochet Flowers">Crochet Flowers</option>
+                  <option value="Crochet Plushies">Crochet Plushies</option>
+                  <option value="Custom Keychains">Custom Keychains</option>
+                  <option value="Gift Hampers">Gift Hampers</option>
+                </select>
+              </div>
+
+              {/* Photo Upload & Preview */}
+              <div>
+                <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-2">
+                  Hero Showcase Photo
+                </label>
+                <div className="flex items-center gap-4">
+                  {heroPhotoPreview ? (
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-900 border-2 border-[#D8E3EC] flex-shrink-0 relative shadow-sm">
+                      <img src={heroPhotoPreview} alt="Hero Banner Preview" className="w-full h-full object-cover" />
                     </div>
+                  ) : (
+                    <div className="w-20 h-20 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 flex-shrink-0">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
 
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        await setFeaturedProduct(p.id);
-                        const showcase: HeroShowcaseConfig = {
-                          title: p.title,
-                          category: p.category,
-                          price: p.price,
-                          imageUrl: p.image_url,
-                          instagramUrl: p.instagram_url,
-                        };
-                        await saveHeroShowcaseCloud(showcase);
-                        setArtistProfileState({ ...artistProfile, heroShowcase: showcase });
-                        refreshProducts();
-                        setToastMsg({ type: "success", text: `⭐ "${p.title}" is now the Global Hero Showcase Artwork for all visitors!` });
-                      }}
-                      className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-all shadow-sm flex-shrink-0 ${
-                        isSelectedHero
-                          ? "bg-amber-500 text-white font-extrabold"
-                          : "bg-[#182b3f] text-white hover:bg-[#111f2e]"
-                      }`}
-                    >
-                      {isSelectedHero ? "⭐ ACTIVE HERO" : "SET HERO"}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                  <label className="flex-1 cursor-pointer">
+                    <span className="bg-[#f3ede9] hover:bg-[#d1e2ef] text-[#182b3f] border border-[#D8E3EC] text-xs font-bold py-2.5 px-4 rounded-full inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                      <UploadCloud className="w-4 h-4 text-[#567c8d]" />
+                      <span>Upload Hero Photo</span>
+                    </span>
+                    <input type="file" accept="image/*" onChange={handleHeroPhotoChange} className="hidden" />
+                    <span className="block text-[11px] text-[#50606c] mt-1.5">
+                      Upload any artwork photo for top hero banner
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                  Optional Instagram Post Link
+                </label>
+                <input
+                  type="url"
+                  value={heroInstaInput}
+                  onChange={(e) => setHeroInstaInput(e.target.value)}
+                  placeholder="https://www.instagram.com/p/..."
+                  className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSavingHero}
+                className="w-full bg-[#2f4156] hover:bg-[#182b3f] text-white font-extrabold py-3.5 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-95 disabled:opacity-70"
+              >
+                {isSavingHero ? (
+                  <span className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Saving &amp; Syncing Hero Banner...</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Save &amp; Publish Top Hero Showcase Banner</span>
+                  </span>
+                )}
+              </button>
+            </form>
           </div>
 
           {/* 👩‍🎨 Update Artist Profile & Photo (Vishva) Box */}

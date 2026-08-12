@@ -196,10 +196,44 @@ export async function saveFeaturedProductIdCloud(id: string): Promise<void> {
 
 export async function saveHeroShowcaseCloud(showcase: HeroShowcaseConfig): Promise<void> {
   const current = getArtistProfile();
-  const updated: ArtistProfile = { ...current, heroShowcase: showcase };
-  saveLocalArtistProfile(updated);
+  let finalImageUrl = showcase.imageUrl || "";
 
   const supabase = getSupabase();
+
+  if (isSupabaseConfigured() && supabase && finalImageUrl.startsWith("data:")) {
+    try {
+      const blob = dataURLtoBlob(finalImageUrl);
+      const fileName = `hero-showcase-${Date.now()}.jpg`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(fileName, blob, {
+          contentType: blob.type || "image/jpeg",
+          upsert: true,
+        });
+
+      if (!uploadError && uploadData) {
+        const { data: publicUrlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(uploadData.path);
+
+        if (publicUrlData?.publicUrl) {
+          finalImageUrl = publicUrlData.publicUrl;
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to upload hero image to Supabase storage:", err);
+    }
+  }
+
+  const finalShowcase: HeroShowcaseConfig = {
+    ...showcase,
+    imageUrl: finalImageUrl,
+  };
+
+  const updated: ArtistProfile = { ...current, heroShowcase: finalShowcase };
+  saveLocalArtistProfile(updated);
+
   if (isSupabaseConfigured() && supabase) {
     try {
       await supabase.from("artist_profile").upsert({
@@ -208,7 +242,7 @@ export async function saveHeroShowcaseCloud(showcase: HeroShowcaseConfig): Promi
         photo_url: updated.photoUrl,
         bio: updated.bio,
         featured_product_id: updated.featuredProductId || null,
-        hero_showcase: JSON.stringify(showcase),
+        hero_showcase: JSON.stringify(finalShowcase),
         updated_at: new Date().toISOString(),
       });
     } catch (err) {

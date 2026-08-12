@@ -120,8 +120,8 @@ export default function HomePage() {
 
   const heroIgInfo = heroIgUrl ? extractInstagramInfo(heroIgUrl) : null;
   const heroPhoto =
-    featuredHeroItem?.image_url ||
     cloudShowcase?.imageUrl ||
+    featuredHeroItem?.image_url ||
     (heroIgInfo as any)?.proxyImageUrl ||
     "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
