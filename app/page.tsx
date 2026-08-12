@@ -102,25 +102,17 @@ export default function HomePage() {
     if (selectedCategory === "All Collections" || selectedCategory === "All") return true;
     if (selectedCategory === "Instagram Reels") return item.category === "Instagram Reels" || Boolean(item.instagram_url);
     return item.category === selectedCategory;
-  });
-
-  const cloudShowcase = artistProfile?.heroShowcase;
-
   const featuredHeroItem =
-    products.find((p) => cloudShowcase?.title && p.title.trim().toLowerCase() === cloudShowcase.title.trim().toLowerCase()) ||
     products.find((p) => p.is_featured) ||
-    products.find((p) => p.id === artistProfile?.featuredProductId) ||
-    products.find((p) => p.id === heroFeaturedId) ||
     products[0] ||
     null;
 
-  const heroTitle = cloudShowcase?.title || featuredHeroItem?.title || "Handcrafted Masterpiece";
-  const heroPrice = cloudShowcase?.price ?? (featuredHeroItem?.price || 1500);
-  const heroIgUrl = cloudShowcase?.instagramUrl || featuredHeroItem?.instagram_url;
+  const heroTitle = featuredHeroItem?.title || "Radhe Shyam!!";
+  const heroPrice = featuredHeroItem?.price || 499986;
+  const heroIgUrl = featuredHeroItem?.instagram_url;
 
   const heroIgInfo = heroIgUrl ? extractInstagramInfo(heroIgUrl) : null;
   const heroPhoto =
-    cloudShowcase?.imageUrl ||
     featuredHeroItem?.image_url ||
     (heroIgInfo as any)?.proxyImageUrl ||
     "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
