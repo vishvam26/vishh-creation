@@ -32,6 +32,7 @@ import {
   Image as ImageIcon,
   Video,
   RefreshCw,
+  UserCheck,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
