@@ -343,44 +343,26 @@ body {
   border-color: #567c8d !important;
 }
 
-/* 🕷️ Crochet Spiderman Swing Animation */
-@keyframes pendulumSwing {
-  0%   { transform: rotate(-22deg); }
-  50%  { transform: rotate(22deg); }
-  100% { transform: rotate(-22deg); }
+/* 🌸 Infinite Marquee Scroll for Hero Photo Strip */
+@keyframes marqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-@keyframes bodySway {
-  0%   { transform: rotate(8deg) scaleX(0.97); }
-  50%  { transform: rotate(-8deg) scaleX(1.03); }
-  100% { transform: rotate(8deg) scaleX(0.97); }
+@keyframes marqueeRight {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
-@keyframes eyesBlink {
-  0%, 90%, 100% { transform: scaleY(1); }
-  95%            { transform: scaleY(0.1); }
+.marquee-scroll-left {
+  animation: marqueeLeft 18s linear infinite;
 }
 
-@keyframes shadowPulse {
-  0%, 100% { transform: translateX(-50%) scaleX(0.7); opacity: 0.2; }
-  50%       { transform: translateX(-50%) scaleX(1.2); opacity: 0.1; }
+.marquee-scroll-right {
+  animation: marqueeRight 18s linear infinite;
 }
 
-.spiderman-swing {
-  animation: pendulumSwing 2.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
-  transform-origin: top center;
-}
-
-.spiderman-body-sway {
-  animation: bodySway 2.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
-  transform-origin: top center;
-}
-
-.spiderman-eyes {
-  animation: eyesBlink 4s ease-in-out infinite;
-  transform-origin: center;
-}
-
-.spiderman-shadow {
-  animation: shadowPulse 2.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+.marquee-scroll-left:hover,
+.marquee-scroll-right:hover {
+  animation-play-state: paused;
 }
