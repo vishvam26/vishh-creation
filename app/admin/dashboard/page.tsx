@@ -11,6 +11,7 @@ import {
   Product,
 } from "@/lib/products";
 import {
+  getArtistProfile,
   fetchArtistProfileAsync,
   saveArtistProfilePermanent,
   ArtistProfile,
