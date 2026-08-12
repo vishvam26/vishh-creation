@@ -176,52 +176,125 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white/70 rounded-3xl p-8 sm:p-12 border border-[#D8E3EC]/80 shadow-sm text-center">
-        <div className="max-w-3xl mx-auto flex flex-col justify-center items-center text-center space-y-6">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-xs font-semibold uppercase tracking-wider shadow-sm">
-            <span className="text-amber-500">✨</span>
-            <span>Handmade Artwork &amp; Crochet Creations by Vishva</span>
+      <section className="bg-white/70 rounded-3xl p-6 sm:p-10 border border-[#D8E3EC]/80 shadow-sm">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+          {/* Left: Text Content */}
+          <div className="w-full lg:w-[52%] flex flex-col justify-center items-start text-left space-y-5">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-xs font-semibold uppercase tracking-wider shadow-sm">
+              <span className="text-amber-500">✨</span>
+              <span>Handmade Artwork &amp; Crochet Creations by Vishva</span>
+            </div>
+
+            <h1 className="font-heading text-4xl sm:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
+              Handcrafted Treasures <br />
+              <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
+            </h1>
+
+            <p className="text-[#50606c] text-sm sm:text-base max-w-xl leading-relaxed">
+              Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <a
+                href="#gallery"
+                className="bg-[#182b3f] hover:bg-[#111f2e] !text-white text-xs font-extrabold px-6 py-3.5 rounded-full transition-all shadow-md flex items-center gap-2"
+                style={{ textDecoration: "none" }}
+              >
+                <span className="!text-white font-bold">Explore Shop Collection</span>
+                <span className="!text-white font-bold">↓</span>
+              </a>
+              <a
+                href={SITE_CONFIG.artDmUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#2f4156] hover:bg-[#1f2d3d] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
+                style={{ textDecoration: "none" }}
+              >
+                <span className="!text-white font-bold">🎨 DM Art (@{SITE_CONFIG.artInstagram})</span>
+              </a>
+              <a
+                href={SITE_CONFIG.crochetDmUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#567c8d] hover:bg-[#456574] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
+                style={{ textDecoration: "none" }}
+              >
+                <span className="!text-white font-bold">🧶 DM Crochet (@{SITE_CONFIG.crochetInstagram})</span>
+              </a>
+            </div>
           </div>
 
-          <h1 className="font-heading text-4xl sm:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
-            Handcrafted Treasures <br />
-            <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
-          </h1>
+          {/* Right: Auto-Rotating Circular Photo Carousel */}
+          {products.length > 0 && (
+            <div className="w-full lg:w-[400px] flex-shrink-0 flex items-center justify-center">
+              <div className="relative w-[340px] h-[340px] sm:w-[380px] sm:h-[380px]">
+                {/* Outer ring - orbiting photos */}
+                <div className="absolute inset-0 rounded-full animate-spin" style={{ animationDuration: "18s" }}>
+                  {products.filter(p => p.image_url).slice(0, 6).map((p, i) => {
+                    const total = Math.min(products.filter(x => x.image_url).length, 6);
+                    const angle = (360 / total) * i;
+                    const rad = (angle * Math.PI) / 180;
+                    const r = 135;
+                    const x = 50 + (r / 190) * 50 * Math.cos(rad);
+                    const y = 50 + (r / 190) * 50 * Math.sin(rad);
+                    return (
+                      <div
+                        key={p.id}
+                        className="absolute w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-lg"
+                        style={{
+                          left: `${x}%`,
+                          top: `${y}%`,
+                          transform: "translate(-50%, -50%)",
+                        }}
+                      >
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+                      </div>
+                    );
+                  })}
+                </div>
 
-          <p className="text-[#50606c] text-base sm:text-lg max-w-2xl leading-relaxed">
-            Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
-          </p>
+                {/* Inner ring - counter-rotating */}
+                <div className="absolute inset-[55px] rounded-full animate-spin" style={{ animationDuration: "12s", animationDirection: "reverse" }}>
+                  {products.filter(p => p.image_url).slice(0, 4).map((p, i) => {
+                    const total = Math.min(products.filter(x => x.image_url).length, 4);
+                    const angle = (360 / total) * i + 45;
+                    const rad = (angle * Math.PI) / 180;
+                    const r = 70;
+                    const cx = 50 + (r / 115) * 50 * Math.cos(rad);
+                    const cy = 50 + (r / 115) * 50 * Math.sin(rad);
+                    return (
+                      <div
+                        key={p.id + "-inner"}
+                        className="absolute w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md"
+                        style={{
+                          left: `${cx}%`,
+                          top: `${cy}%`,
+                          transform: "translate(-50%, -50%)",
+                        }}
+                      >
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+                      </div>
+                    );
+                  })}
+                </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
-            <a
-              href="#gallery"
-              className="bg-[#182b3f] hover:bg-[#111f2e] !text-white text-xs font-extrabold px-7 py-3.5 rounded-full transition-all shadow-md flex items-center gap-2"
-              style={{ textDecoration: "none" }}
-            >
-              <span className="!text-white font-bold">Explore Shop Collection</span>
-              <span className="!text-white font-bold">↓</span>
-            </a>
+                {/* Center circle - VISHH logo or first photo */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl bg-[#F5EFEB] flex items-center justify-center">
+                    {products[0]?.image_url ? (
+                      <img src={products[0].image_url} alt="Featured" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-2xl font-bold text-[#2f4156]">V</span>
+                    )}
+                  </div>
+                </div>
 
-            <a
-              href={SITE_CONFIG.artDmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#2f4156] hover:bg-[#1f2d3d] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
-              style={{ textDecoration: "none" }}
-            >
-              <span className="!text-white font-bold">🎨 DM Art (@{SITE_CONFIG.artInstagram})</span>
-            </a>
-
-            <a
-              href={SITE_CONFIG.crochetDmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#567c8d] hover:bg-[#456574] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
-              style={{ textDecoration: "none" }}
-            >
-              <span className="!text-white font-bold">🧶 DM Crochet (@{SITE_CONFIG.crochetInstagram})</span>
-            </a>
-          </div>
+                {/* Decorative ring borders */}
+                <div className="absolute inset-0 rounded-full border border-[#D8E3EC]/50 pointer-events-none" />
+                <div className="absolute inset-[55px] rounded-full border border-[#D8E3EC]/40 pointer-events-none" />
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
