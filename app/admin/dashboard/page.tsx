@@ -29,7 +29,6 @@ import {
   Star,
   AlertTriangle,
   CheckCircle2,
-  RefreshCw,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
