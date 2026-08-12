@@ -224,85 +224,220 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right: Premium Stacked Cards */}
-          {products.filter(p => p.image_url).length >= 1 && (
-            <div className="w-full lg:w-[420px] flex-shrink-0 flex items-center justify-center py-6">
-              <div className="relative w-[300px] h-[370px] sm:w-[340px] sm:h-[420px]">
+          {/* Right: 🕷️ Hanging Crochet Spiderman */}
+          <div className="w-full lg:w-[380px] flex-shrink-0 flex items-start justify-center pt-2">
+            <div className="relative flex flex-col items-center" style={{ height: "420px" }}>
 
-                {/* Card 3 — Back left, most tilted */}
-                {products.filter(p => p.image_url)[2] && (
-                  <div
-                    className="absolute w-[200px] h-[260px] sm:w-[230px] sm:h-[290px] rounded-[22px] overflow-hidden shadow-xl border-4 border-white"
-                    style={{
-                      top: "30px",
-                      left: "-10px",
-                      transform: "rotate(-12deg)",
-                      zIndex: 1,
-                    }}
-                  >
-                    <img
-                      src={products.filter(p => p.image_url)[2].image_url}
-                      alt={products.filter(p => p.image_url)[2].title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/15" />
-                  </div>
-                )}
+              {/* Anchor point (web line from top) */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ zIndex: 5 }}>
+                {/* Spider web top corner */}
+                <svg width="80" height="40" viewBox="0 0 80 40" className="opacity-30">
+                  <line x1="40" y1="0" x2="0" y2="40" stroke="#999" strokeWidth="1" />
+                  <line x1="40" y1="0" x2="20" y2="40" stroke="#999" strokeWidth="1" />
+                  <line x1="40" y1="0" x2="40" y2="40" stroke="#999" strokeWidth="1" />
+                  <path d="M5,20 Q22,10 40,20" fill="none" stroke="#999" strokeWidth="0.8" />
+                  <path d="M0,35 Q20,22 40,35" fill="none" stroke="#999" strokeWidth="0.8" />
+                </svg>
+              </div>
 
-                {/* Card 2 — Middle right, slight tilt */}
-                {products.filter(p => p.image_url)[1] && (
-                  <div
-                    className="absolute w-[200px] h-[260px] sm:w-[230px] sm:h-[290px] rounded-[22px] overflow-hidden shadow-xl border-4 border-white"
-                    style={{
+              {/* Full swing pivot */}
+              <div className="spiderman-swing" style={{ position: "absolute", top: "30px", left: "50%", transformOrigin: "50% 0%" }}>
+                {/* String */}
+                <div style={{
+                  width: "3px",
+                  height: "110px",
+                  background: "linear-gradient(to bottom, #e8e0d5, #c8bfb0)",
+                  margin: "0 auto",
+                  borderRadius: "2px",
+                  boxShadow: "0 0 4px rgba(0,0,0,0.1)"
+                }} />
+
+                {/* Spiderman Body */}
+                <div className="spiderman-body-sway" style={{ transformOrigin: "50% 0%", marginTop: "-2px" }}>
+                  {/* ARMS (outstretched) */}
+                  <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}>
+
+                    {/* Left arm */}
+                    <div style={{
+                      position: "absolute",
+                      left: "-55px",
                       top: "20px",
-                      right: "-10px",
-                      transform: "rotate(8deg)",
-                      zIndex: 2,
-                    }}
-                  >
-                    <img
-                      src={products.filter(p => p.image_url)[1].image_url}
-                      alt={products.filter(p => p.image_url)[1].title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/10" />
-                  </div>
-                )}
+                      width: "58px",
+                      height: "22px",
+                      background: "linear-gradient(135deg, #c0392b, #e74c3c)",
+                      borderRadius: "12px 4px 4px 12px",
+                      transform: "rotate(-30deg)",
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2), 2px 2px 6px rgba(0,0,0,0.15)",
+                      border: "2px solid #922b21"
+                    }} />
 
-                {/* Card 1 — Front center, straight (most prominent) */}
-                {products.filter(p => p.image_url)[0] && (
-                  <div
-                    className="absolute w-[220px] h-[290px] sm:w-[255px] sm:h-[330px] rounded-[22px] overflow-hidden shadow-2xl border-4 border-white cursor-pointer group"
-                    style={{
-                      bottom: "0px",
-                      left: "50%",
-                      transform: "translateX(-50%) rotate(-2deg)",
-                      zIndex: 3,
-                    }}
-                    onClick={() => openVisualizer(products.filter(p => p.image_url)[0].image_url)}
-                  >
-                    <img
-                      src={products.filter(p => p.image_url)[0].image_url}
-                      alt={products.filter(p => p.image_url)[0].title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {/* Bottom label */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                      <p className="text-white font-bold text-xs truncate">
-                        {products.filter(p => p.image_url)[0].title}
-                      </p>
-                      <p className="text-amber-300 font-extrabold text-sm">
-                        ₹{products.filter(p => p.image_url)[0].price.toLocaleString("en-IN")}
-                      </p>
+                    {/* Left hand */}
+                    <div style={{
+                      position: "absolute",
+                      left: "-70px",
+                      top: "10px",
+                      width: "20px",
+                      height: "20px",
+                      background: "#c0392b",
+                      borderRadius: "50%",
+                      border: "2px solid #922b21",
+                      boxShadow: "2px 2px 4px rgba(0,0,0,0.2)"
+                    }} />
+
+                    {/* Right arm */}
+                    <div style={{
+                      position: "absolute",
+                      right: "-55px",
+                      top: "20px",
+                      width: "58px",
+                      height: "22px",
+                      background: "linear-gradient(135deg, #c0392b, #e74c3c)",
+                      borderRadius: "4px 12px 12px 4px",
+                      transform: "rotate(30deg)",
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2), 2px 2px 6px rgba(0,0,0,0.15)",
+                      border: "2px solid #922b21"
+                    }} />
+
+                    {/* Right hand */}
+                    <div style={{
+                      position: "absolute",
+                      right: "-70px",
+                      top: "10px",
+                      width: "20px",
+                      height: "20px",
+                      background: "#c0392b",
+                      borderRadius: "50%",
+                      border: "2px solid #922b21",
+                      boxShadow: "2px 2px 4px rgba(0,0,0,0.2)"
+                    }} />
+
+                    {/* TORSO */}
+                    <div style={{
+                      width: "90px",
+                      height: "100px",
+                      background: "linear-gradient(160deg, #e74c3c 40%, #2e86c1 40%)",
+                      borderRadius: "45% 45% 40% 40% / 30% 30% 50% 50%",
+                      border: "3px solid #1a5276",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.2), inset 0 3px 8px rgba(255,255,255,0.15)",
+                      position: "relative",
+                      overflow: "hidden"
+                    }}>
+                      {/* Chest web pattern */}
+                      <svg width="90" height="100" viewBox="0 0 90 100" style={{ position: "absolute", top: 0, left: 0, opacity: 0.25 }}>
+                        <line x1="45" y1="0" x2="45" y2="100" stroke="#333" strokeWidth="1" />
+                        <line x1="0" y1="30" x2="90" y2="30" stroke="#333" strokeWidth="1" />
+                        <line x1="0" y1="55" x2="90" y2="55" stroke="#333" strokeWidth="1" />
+                        <line x1="10" y1="0" x2="80" y2="100" stroke="#333" strokeWidth="0.8" />
+                        <line x1="80" y1="0" x2="10" y2="100" stroke="#333" strokeWidth="0.8" />
+                      </svg>
                     </div>
                   </div>
-                )}
 
-                {/* Decorative dots / blob behind */}
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[180px] h-[30px] bg-black/10 blur-xl rounded-full -z-0" />
+                  {/* HEAD (hanging below body — upside down) */}
+                  <div style={{
+                    width: "85px",
+                    height: "85px",
+                    borderRadius: "50%",
+                    background: "radial-gradient(circle at 40% 35%, #f1948a, #c0392b 60%, #922b21)",
+                    border: "3px solid #7b241c",
+                    margin: "4px auto 0",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.3), inset 0 -4px 8px rgba(0,0,0,0.2)",
+                    position: "relative",
+                    overflow: "hidden"
+                  }}>
+                    {/* Web lines on head */}
+                    <svg width="85" height="85" viewBox="0 0 85 85" style={{ position: "absolute", top: 0, left: 0, opacity: 0.2 }}>
+                      <line x1="42" y1="0" x2="42" y2="85" stroke="#333" strokeWidth="1" />
+                      <line x1="0" y1="42" x2="85" y2="42" stroke="#333" strokeWidth="1" />
+                      <line x1="10" y1="10" x2="75" y2="75" stroke="#333" strokeWidth="0.8" />
+                      <line x1="75" y1="10" x2="10" y2="75" stroke="#333" strokeWidth="0.8" />
+                      <ellipse cx="42" cy="42" rx="20" ry="20" fill="none" stroke="#333" strokeWidth="0.8" />
+                    </svg>
+
+                    {/* Left eye */}
+                    <div className="spiderman-eyes" style={{
+                      position: "absolute",
+                      left: "8px",
+                      top: "28px",
+                      width: "28px",
+                      height: "22px",
+                      background: "white",
+                      borderRadius: "50% 50% 40% 40%",
+                      border: "2.5px solid #111",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                      transform: "rotate(-10deg)"
+                    }}>
+                      <div style={{ position: "absolute", top: "4px", left: "6px", width: "10px", height: "8px", background: "#d0e8ff", borderRadius: "50%", opacity: 0.6 }} />
+                    </div>
+
+                    {/* Right eye */}
+                    <div className="spiderman-eyes" style={{
+                      position: "absolute",
+                      right: "8px",
+                      top: "28px",
+                      width: "28px",
+                      height: "22px",
+                      background: "white",
+                      borderRadius: "50% 50% 40% 40%",
+                      border: "2.5px solid #111",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                      transform: "rotate(10deg)"
+                    }}>
+                      <div style={{ position: "absolute", top: "4px", left: "6px", width: "10px", height: "8px", background: "#d0e8ff", borderRadius: "50%", opacity: 0.6 }} />
+                    </div>
+
+                    {/* Highlight */}
+                    <div style={{ position: "absolute", top: "10px", left: "18px", width: "22px", height: "12px", background: "rgba(255,255,255,0.2)", borderRadius: "50%", transform: "rotate(-15deg)" }} />
+                  </div>
+
+                  {/* LEGS */}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "4px" }}>
+                    {/* Left leg */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "2px" }}>
+                      <div style={{ width: "22px", height: "38px", background: "linear-gradient(160deg, #c0392b, #922b21)", borderRadius: "10px", border: "2px solid #7b241c", boxShadow: "2px 2px 6px rgba(0,0,0,0.2)", transform: "rotate(-8deg)" }} />
+                      <div style={{ width: "20px", height: "22px", background: "#e74c3c", borderRadius: "50% 40% 40% 50%", border: "2px solid #922b21", transform: "rotate(-5deg)" }} />
+                    </div>
+                    {/* Right leg */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
+                      <div style={{ width: "22px", height: "38px", background: "linear-gradient(160deg, #c0392b, #922b21)", borderRadius: "10px", border: "2px solid #7b241c", boxShadow: "2px 2px 6px rgba(0,0,0,0.2)", transform: "rotate(8deg)" }} />
+                      <div style={{ width: "20px", height: "22px", background: "#e74c3c", borderRadius: "40% 50% 50% 40%", border: "2px solid #922b21", transform: "rotate(5deg)" }} />
+                    </div>
+                  </div>
+
+                  {/* 🏷️ Crochet tag */}
+                  <div style={{ textAlign: "center", marginTop: "12px" }}>
+                    <span style={{
+                      display: "inline-block",
+                      background: "rgba(255,255,255,0.9)",
+                      border: "1.5px solid #D8E3EC",
+                      borderRadius: "99px",
+                      padding: "4px 12px",
+                      fontSize: "10px",
+                      fontWeight: 800,
+                      color: "#182b3f",
+                      letterSpacing: "0.05em",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+                    }}>
+                      🧶 Crochet Plushie
+                    </span>
+                  </div>
+                </div>
               </div>
+
+              {/* Shadow on ground */}
+              <div className="spiderman-shadow" style={{
+                position: "absolute",
+                bottom: "0px",
+                left: "50%",
+                width: "80px",
+                height: "14px",
+                background: "rgba(0,0,0,0.12)",
+                borderRadius: "50%",
+                filter: "blur(6px)"
+              }} />
             </div>
-          )}
+          </div>
+
 
         </div>
       </section>
