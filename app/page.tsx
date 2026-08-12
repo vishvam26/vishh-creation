@@ -106,6 +106,7 @@ export default function HomePage() {
 
   const featuredHeroItem =
     products.find((p) => p.is_featured) ||
+    products.find((p) => p.id === artistProfile?.featuredProductId) ||
     products.find((p) => p.id === heroFeaturedId) ||
     products[0] ||
     null;

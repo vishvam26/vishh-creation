@@ -4,12 +4,14 @@ export interface ArtistProfile {
   name: string;
   photoUrl: string;
   bio: string;
+  featuredProductId?: string | null;
 }
 
 export const DEFAULT_ARTIST_PROFILE: ArtistProfile = {
   name: "Vishva",
   photoUrl: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=400&auto=format&fit=crop",
   bio: "Every artwork and crochet creation is 100% handcrafted in small batches by Vishva in her home studio. Check out her Instagram profiles @__vishh.art__ (Art) and @vishvayi._ (Crochet) to see all her art posts and behind-the-scenes craft videos!",
+  featuredProductId: null,
 };
 
 const ARTIST_STORAGE_KEY = "vishart_artist_profile_v3";
@@ -67,6 +69,7 @@ export async function fetchArtistProfileAsync(): Promise<ArtistProfile> {
           name: data[0].name || local.name,
           photoUrl: data[0].photo_url || local.photoUrl,
           bio: data[0].bio || local.bio,
+          featuredProductId: data[0].featured_product_id || local.featuredProductId || null,
         };
         saveLocalArtistProfile(fetched);
         return fetched;
@@ -138,4 +141,26 @@ export async function saveArtistProfilePermanent(
   }
 
   return { profile: finalProfile, isCloud: Boolean(isSupabaseConfigured() && supabase) };
+}
+
+export async function saveFeaturedProductIdCloud(id: string): Promise<void> {
+  const current = getArtistProfile();
+  const updated: ArtistProfile = { ...current, featuredProductId: id };
+  saveLocalArtistProfile(updated);
+
+  const supabase = getSupabase();
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      await supabase.from("artist_profile").upsert({
+        id: 1,
+        name: updated.name,
+        photo_url: updated.photoUrl,
+        bio: updated.bio,
+        featured_product_id: id,
+        updated_at: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.warn("Supabase upsert featured_product_id warning:", err);
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import { getSupabase, isSupabaseConfigured } from "./supabase";
+import { saveFeaturedProductIdCloud } from "./artist";
 
 export interface Product {
   id: string;
@@ -143,6 +144,7 @@ export async function fetchAllProducts(): Promise<{ products: Product[]; isCloud
 // Set a single product as the featured Hero Showcase photo (Synced for all visitors)
 export async function setFeaturedProduct(id: string): Promise<{ success: boolean; isCloud: boolean }> {
   setFeaturedHeroProductId(id);
+  saveFeaturedProductIdCloud(id);
 
   // Update local list first so UI updates immediately
   const localList = getLocalProducts();
