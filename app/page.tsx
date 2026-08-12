@@ -102,6 +102,8 @@ export default function HomePage() {
     if (selectedCategory === "All Collections" || selectedCategory === "All") return true;
     if (selectedCategory === "Instagram Reels") return item.category === "Instagram Reels" || Boolean(item.instagram_url);
     return item.category === selectedCategory;
+  });
+
   const featuredHeroItem =
     products.find((p) => p.is_featured) ||
     products[0] ||
