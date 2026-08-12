@@ -176,89 +176,51 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white/60 rounded-3xl p-6 sm:p-10 border border-[#D8E3EC]/80 shadow-sm">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-          <div className="w-full lg:w-[55%] flex flex-col justify-center items-start text-left space-y-5">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-xs font-semibold uppercase tracking-wider shadow-sm">
-              <span className="text-amber-500">✨</span>
-              <span>Handmade Artwork &amp; Crochet Creations by Vishva</span>
-            </div>
-
-            <h1 className="font-heading text-4xl sm:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
-              Handcrafted Treasures <br />
-              <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
-            </h1>
-
-            <p className="text-[#50606c] text-sm sm:text-base max-w-xl leading-relaxed">
-              Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <a
-                href="#gallery"
-                className="bg-[#182b3f] hover:bg-[#111f2e] !text-white text-xs font-extrabold px-6 py-3.5 rounded-full transition-all shadow-md flex items-center gap-2"
-                style={{ textDecoration: "none" }}
-              >
-                <span className="!text-white font-bold">Explore Shop Collection</span>
-                <span className="!text-white font-bold">↓</span>
-              </a>
-
-              <a
-                href={SITE_CONFIG.artDmUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#2f4156] hover:bg-[#1f2d3d] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
-                style={{ textDecoration: "none" }}
-              >
-                <span className="!text-white font-bold">🎨 DM Art (@{SITE_CONFIG.artInstagram})</span>
-              </a>
-
-              <a
-                href={SITE_CONFIG.crochetDmUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#567c8d] hover:bg-[#456574] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
-                style={{ textDecoration: "none" }}
-              >
-                <span className="!text-white font-bold">🧶 DM Crochet (@{SITE_CONFIG.crochetInstagram})</span>
-              </a>
-            </div>
+      <section className="bg-white/70 rounded-3xl p-8 sm:p-12 border border-[#D8E3EC]/80 shadow-sm text-center">
+        <div className="max-w-3xl mx-auto flex flex-col justify-center items-center text-center space-y-6">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-xs font-semibold uppercase tracking-wider shadow-sm">
+            <span className="text-amber-500">✨</span>
+            <span>Handmade Artwork &amp; Crochet Creations by Vishva</span>
           </div>
 
-          <div className="w-full lg:w-[410px] max-w-[410px] relative mx-auto lg:mx-0 flex-shrink-0 animate-float">
-            <div className="bg-white rounded-3xl p-3 border-2 border-[#D8E3EC] shadow-xl relative overflow-hidden group animate-pulse-glow">
-              {/* Main Canvas Image Frame - Dynamic Natural Aspect Ratio Auto-Fitting */}
-              <div
-                className="relative w-full min-h-[200px] max-h-[360px] flex items-center justify-center bg-[#F5EFEB] rounded-2xl overflow-hidden cursor-pointer p-1"
-                onClick={() => openVisualizer(heroPhoto || undefined)}
-              >
-                <img
-                  src={heroPhoto || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop"}
-                  alt="Featured Hero Artwork"
-                  className="w-full h-auto max-h-[350px] object-contain rounded-xl group-hover:scale-105 transition-transform duration-700 shadow-sm"
-                />
+          <h1 className="font-heading text-4xl sm:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
+            Handcrafted Treasures <br />
+            <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
+          </h1>
 
-                {/* Floating Bottom Card Badge */}
-                <div className="absolute bottom-2.5 left-2.5 z-20 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-lg border border-[#D8E3EC] flex items-center gap-2 active:scale-95 transition-transform">
-                  <img
-                    src={heroPhoto}
-                    alt={heroTitle}
-                    className="w-8 h-8 rounded-xl object-cover border border-[#D8E3EC]"
-                  />
-                  <div>
-                    <span className="text-[8.5px] font-extrabold uppercase tracking-wider text-[#567c8d] block flex items-center gap-0.5">
-                      TAP FOR 3D WALL VIEW 🔍
-                    </span>
-                    <p className="font-extrabold text-[11px] text-[#182b3f] truncate max-w-[120px]">
-                      {heroTitle}
-                    </p>
-                    <p className="text-[9.5px] text-[#50606c] font-bold">
-                      ₹{heroPrice.toLocaleString("en-IN")} ★ 5.0
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <p className="text-[#50606c] text-base sm:text-lg max-w-2xl leading-relaxed">
+            Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
+            <a
+              href="#gallery"
+              className="bg-[#182b3f] hover:bg-[#111f2e] !text-white text-xs font-extrabold px-7 py-3.5 rounded-full transition-all shadow-md flex items-center gap-2"
+              style={{ textDecoration: "none" }}
+            >
+              <span className="!text-white font-bold">Explore Shop Collection</span>
+              <span className="!text-white font-bold">↓</span>
+            </a>
+
+            <a
+              href={SITE_CONFIG.artDmUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#2f4156] hover:bg-[#1f2d3d] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
+              style={{ textDecoration: "none" }}
+            >
+              <span className="!text-white font-bold">🎨 DM Art (@{SITE_CONFIG.artInstagram})</span>
+            </a>
+
+            <a
+              href={SITE_CONFIG.crochetDmUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#567c8d] hover:bg-[#456574] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
+              style={{ textDecoration: "none" }}
+            >
+              <span className="!text-white font-bold">🧶 DM Crochet (@{SITE_CONFIG.crochetInstagram})</span>
+            </a>
           </div>
         </div>
       </section>
