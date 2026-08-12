@@ -19,7 +19,17 @@ import {
 import { validateAndCompressImage } from "@/lib/imageUtils";
 import { extractInstagramInfo, InstagramInfo } from "@/lib/instagramUtils";
 import { SITE_CONFIG } from "@/lib/config";
-import { Sparkles } from "lucide-react";
+import {
+  Sparkles,
+  LogOut,
+  UploadCloud,
+  PlusCircle,
+  Trash2,
+  Star,
+  AlertTriangle,
+  CheckCircle2,
+  RefreshCw,
+} from "lucide-react";
 
 export default function AdminDashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
