@@ -29,6 +29,8 @@ import {
   Star,
   AlertTriangle,
   CheckCircle2,
+  Image as ImageIcon,
+  Video,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
