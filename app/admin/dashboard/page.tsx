@@ -1,4 +1,5 @@
 "use client";
+// Vercel deployment trigger sync
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
