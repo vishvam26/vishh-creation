@@ -685,7 +685,7 @@ export default function AdminDashboardPage() {
                         )}
                         {item.instagram_url && (
                           <span className="absolute bottom-1 right-1 p-0.5 rounded bg-rose-600 text-white text-[9px]" title="Instagram Link">
-                            {extractInstagramInfo(item.instagram_url).type === "reel" ? "🎬" : "📸"}
+                            {extractInstagramInfo(item.instagram_url || "").type === "reel" ? "🎬" : "📸"}
                           </span>
                         )}
                       </div>

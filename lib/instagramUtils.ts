@@ -6,7 +6,7 @@ export interface InstagramInfo {
   proxyImageUrl: string;
 }
 
-export function extractInstagramInfo(url: string): InstagramInfo {
+export function extractInstagramInfo(url?: string | null): InstagramInfo {
   if (!url || typeof url !== "string") {
     return { shortcode: null, type: "unknown", embedUrl: "", mediaUrl: "", proxyImageUrl: "" };
   }
