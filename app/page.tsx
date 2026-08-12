@@ -224,74 +224,46 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right: Auto-Rotating Circular Photo Carousel */}
-          {products.length > 0 && (
-            <div className="w-full lg:w-[400px] flex-shrink-0 flex items-center justify-center">
-              <div className="relative w-[340px] h-[340px] sm:w-[380px] sm:h-[380px]">
-                {/* Outer ring - orbiting photos */}
-                <div className="absolute inset-0 rounded-full animate-spin" style={{ animationDuration: "18s" }}>
-                  {products.filter(p => p.image_url).slice(0, 6).map((p, i) => {
-                    const total = Math.min(products.filter(x => x.image_url).length, 6);
-                    const angle = (360 / total) * i;
-                    const rad = (angle * Math.PI) / 180;
-                    const r = 135;
-                    const x = 50 + (r / 190) * 50 * Math.cos(rad);
-                    const y = 50 + (r / 190) * 50 * Math.sin(rad);
-                    return (
-                      <div
-                        key={p.id}
-                        className="absolute w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-lg"
-                        style={{
-                          left: `${x}%`,
-                          top: `${y}%`,
-                          transform: "translate(-50%, -50%)",
-                        }}
-                      >
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
-                      </div>
-                    );
-                  })}
-                </div>
+          {/* Right: Featured Thumbnail Card */}
+          {heroPhoto && (
+            <div className="w-full lg:w-[380px] flex-shrink-0 flex items-center justify-center">
+              <div className="relative group w-full max-w-[380px]">
+                {/* Main Image Card */}
+                <div
+                  className="relative rounded-[28px] overflow-hidden shadow-2xl border-4 border-white cursor-pointer"
+                  style={{ aspectRatio: "4/5" }}
+                  onClick={() => openVisualizer(heroPhoto)}
+                >
+                  <img
+                    src={heroPhoto}
+                    alt={heroTitle}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
 
-                {/* Inner ring - counter-rotating */}
-                <div className="absolute inset-[55px] rounded-full animate-spin" style={{ animationDuration: "12s", animationDirection: "reverse" }}>
-                  {products.filter(p => p.image_url).slice(0, 4).map((p, i) => {
-                    const total = Math.min(products.filter(x => x.image_url).length, 4);
-                    const angle = (360 / total) * i + 45;
-                    const rad = (angle * Math.PI) / 180;
-                    const r = 70;
-                    const cx = 50 + (r / 115) * 50 * Math.cos(rad);
-                    const cy = 50 + (r / 115) * 50 * Math.sin(rad);
-                    return (
-                      <div
-                        key={p.id + "-inner"}
-                        className="absolute w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md"
-                        style={{
-                          left: `${cx}%`,
-                          top: `${cy}%`,
-                          transform: "translate(-50%, -50%)",
-                        }}
-                      >
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
-                      </div>
-                    );
-                  })}
-                </div>
+                  {/* Gradient overlay at bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-                {/* Center circle - VISHH logo or first photo */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl bg-[#F5EFEB] flex items-center justify-center">
-                    {products[0]?.image_url ? (
-                      <img src={products[0].image_url} alt="Featured" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-2xl font-bold text-[#2f4156]">V</span>
-                    )}
+                  {/* Bottom info strip */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <div className="text-white/80 text-[10px] font-bold uppercase tracking-widest mb-1">
+                      ✨ Featured Artwork
+                    </div>
+                    <div className="text-white font-extrabold text-lg leading-tight truncate">
+                      {heroTitle}
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-amber-300 font-extrabold text-base">
+                        ₹{heroPrice.toLocaleString("en-IN")}
+                      </span>
+                      <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1.5 rounded-full border border-white/30">
+                        🔍 Tap for 3D View
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Decorative ring borders */}
-                <div className="absolute inset-0 rounded-full border border-[#D8E3EC]/50 pointer-events-none" />
-                <div className="absolute inset-[55px] rounded-full border border-[#D8E3EC]/40 pointer-events-none" />
+                {/* Decorative glow ring */}
+                <div className="absolute -inset-1 rounded-[32px] bg-gradient-to-br from-amber-200/40 via-[#D8E3EC]/20 to-[#567c8d]/30 blur-lg -z-10 group-hover:opacity-80 transition-opacity" />
               </div>
             </div>
           )}

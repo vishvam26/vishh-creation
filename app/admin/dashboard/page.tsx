@@ -396,6 +396,103 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Upload Form Box & Artist Profile Manager Box */}
         <div className="lg:col-span-6 space-y-8">
+          {/* 🌟 Featured Hero Thumbnail Upload */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-[#567c8d] shadow-md space-y-5 text-left">
+            <div className="flex items-center justify-between border-b border-[#D8E3EC] pb-3">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-[#567c8d]" />
+                <h2 className="font-heading text-lg font-bold text-[#182b3f]">
+                  Featured Hero Thumbnail
+                </h2>
+              </div>
+              <span className="text-[11px] bg-[#eef4f8] text-[#182b3f] font-extrabold px-3 py-1 rounded-full border border-[#D8E3EC]">
+                ✨ Shows at Top of Website
+              </span>
+            </div>
+
+            <p className="text-xs text-[#50606c] leading-relaxed">
+              Upload the <strong>best painting / featured artwork</strong> photo here. It shows in the big card at the top of your website for all visitors.
+            </p>
+
+            <form onSubmit={handleSaveHeroShowcase} className="space-y-4">
+              {/* Photo Upload & Preview */}
+              <div>
+                <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-2">
+                  Hero Photo *
+                </label>
+                <div className="flex items-center gap-4">
+                  {heroPhotoPreview ? (
+                    <div className="w-24 h-28 rounded-2xl overflow-hidden bg-slate-900 border-2 border-[#D8E3EC] flex-shrink-0 shadow-sm">
+                      <img src={heroPhotoPreview} alt="Hero Preview" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="w-24 h-28 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 flex-shrink-0">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
+                  <label className="flex-1 cursor-pointer">
+                    <span className="bg-[#f3ede9] hover:bg-[#d1e2ef] text-[#182b3f] border border-[#D8E3EC] text-xs font-bold py-2.5 px-4 rounded-full inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                      <UploadCloud className="w-4 h-4 text-[#567c8d]" />
+                      <span>Upload Hero Photo</span>
+                    </span>
+                    <input type="file" accept="image/*" onChange={handleHeroPhotoChange} className="hidden" />
+                    <span className="block text-[11px] text-[#50606c] mt-1.5">
+                      Upload your best artwork photo from phone/laptop
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Title & Price */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                    Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={heroTitleInput}
+                    onChange={(e) => setHeroTitleInput(e.target.value)}
+                    placeholder="e.g. Radhe Shyam!!"
+                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-2.5 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                    Price (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={heroPriceInput}
+                    onChange={(e) => setHeroPriceInput(e.target.value)}
+                    placeholder="499986"
+                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-2.5 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSavingHero}
+                className="w-full bg-[#2f4156] hover:bg-[#182b3f] text-white font-extrabold py-3 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-95 disabled:opacity-70"
+              >
+                {isSavingHero ? (
+                  <span className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Saving to Supabase...</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Set as Featured Hero Thumbnail</span>
+                  </span>
+                )}
+              </button>
+            </form>
+          </div>
+
           {/* Upload Form Box */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#D8E3EC] shadow-sm space-y-6">
             <div className="flex items-center justify-between border-b border-[#D8E3EC] pb-4">
@@ -505,19 +602,7 @@ export default function AdminDashboardPage() {
                 )}
               </div>
 
-              {/* Set as Top Hero Banner Showcase Toggle */}
-              <div className="flex items-center justify-between p-3.5 bg-amber-50/90 rounded-2xl border border-amber-200">
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-amber-600 fill-amber-400" />
-                  <span className="text-xs font-bold text-amber-900">Set as 1 Top Hero Showcase Photo</span>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={isFeatured}
-                  onChange={(e) => setIsFeatured(e.target.checked)}
-                  className="w-4 h-4 accent-amber-600 cursor-pointer"
-                />
-              </div>
+
 
               {/* Title */}
               <div>
@@ -615,132 +700,6 @@ export default function AdminDashboardPage() {
                   <span className="flex items-center gap-2">
                     <UploadCloud className="w-4 h-4" />
                     <span>Publish to Main Website</span>
-                  </span>
-                )}
-              </button>
-            </form>
-          </div>
-
-          {/* 🖼️ Standalone Top Hero Showcase Photo Manager */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-[#567c8d] shadow-md space-y-5 text-left">
-            <div className="flex items-center justify-between border-b border-[#D8E3EC] pb-3">
-              <div className="flex items-center gap-2">
-                <ImageIcon className="w-5 h-5 text-[#567c8d]" />
-                <h2 className="font-heading text-lg font-bold text-[#182b3f]">
-                  Upload Top Hero Banner Photo (Shows at Top of Website)
-                </h2>
-              </div>
-              <span className="text-[11px] bg-[#eef4f8] text-[#182b3f] font-extrabold px-3 py-1 rounded-full border border-[#D8E3EC]">
-                ✨ Displays for ALL Visitors
-              </span>
-            </div>
-
-            <p className="text-xs text-[#50606c] leading-relaxed">
-              Upload the photo and details for the <strong>Top Hero Banner</strong> below. This photo will be stored in Supabase Cloud DB and shown at the top of your website for all visitors globally.
-            </p>
-
-            {/* Quick Fill from Existing Paintings Dropdown */}
-            {products.length > 0 && (
-              <div className="bg-[#f8fafc] p-3.5 rounded-2xl border border-[#e2e8f0]">
-                <label className="block text-[11px] font-bold text-[#182b3f] uppercase tracking-wider mb-1.5">
-                  ⚡ Auto-Fill from Uploaded Paintings/Crochet (Optional):
-                </label>
-                <select
-                  onChange={(e) => {
-                    const selected = products.find((p) => p.id === e.target.value);
-                    if (selected) {
-                      setHeroTitleInput(selected.title);
-                      setHeroPriceInput(selected.price.toString());
-                      setHeroPhotoPreview(selected.image_url);
-                      setHeroInstaInput(selected.instagram_url || "");
-                    }
-                  }}
-                  className="w-full bg-white border border-[#cbd5e1] text-xs font-semibold text-[#182b3f] rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-[#567c8d]"
-                >
-                  <option value="">-- Choose any existing item to auto-fill fields --</option>
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.title} - ₹{p.price.toLocaleString("en-IN")} ({p.category})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveHeroShowcase} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
-                    Hero Artwork Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={heroTitleInput}
-                    onChange={(e) => setHeroTitleInput(e.target.value)}
-                    placeholder="e.g. Radhe Shyam!!"
-                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
-                    Price (₹) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    value={heroPriceInput}
-                    onChange={(e) => setHeroPriceInput(e.target.value)}
-                    placeholder="e.g. 499986"
-                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
-                  />
-                </div>
-              </div>
-
-              {/* Photo Upload & Preview */}
-              <div>
-                <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-2">
-                  Hero Banner Photo *
-                </label>
-                <div className="flex items-center gap-4">
-                  {heroPhotoPreview ? (
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden bg-slate-900 border-2 border-[#D8E3EC] flex-shrink-0 relative shadow-sm">
-                      <img src={heroPhotoPreview} alt="Hero Banner Preview" className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="w-24 h-24 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 flex-shrink-0">
-                      <ImageIcon className="w-8 h-8" />
-                    </div>
-                  )}
-
-                  <label className="flex-1 cursor-pointer">
-                    <span className="bg-[#f3ede9] hover:bg-[#d1e2ef] text-[#182b3f] border border-[#D8E3EC] text-xs font-bold py-2.5 px-4 rounded-full inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                      <UploadCloud className="w-4 h-4 text-[#567c8d]" />
-                      <span>Upload Hero Photo File</span>
-                    </span>
-                    <input type="file" accept="image/*" onChange={handleHeroPhotoChange} className="hidden" />
-                    <span className="block text-[11px] text-[#50606c] mt-1.5">
-                      Select any image file from your phone/laptop to set as Top Hero Banner
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSavingHero}
-                className="w-full bg-[#2f4156] hover:bg-[#182b3f] text-white font-extrabold py-3.5 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-95 disabled:opacity-70"
-              >
-                {isSavingHero ? (
-                  <span className="flex items-center gap-2">
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Uploading Image &amp; Publishing to Supabase...</span>
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span>Save &amp; Publish Top Hero Showcase Photo</span>
                   </span>
                 )}
               </button>
@@ -854,11 +813,7 @@ export default function AdminDashboardPage() {
                 {products.map((item) => (
                   <div
                     key={item.id}
-                    className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all overflow-hidden ${
-                      item.is_featured
-                        ? "bg-amber-50/80 border-amber-300 ring-2 ring-amber-400/50 shadow-md"
-                        : "bg-white border-[#D8E3EC] hover:border-[#567c8d] shadow-sm"
-                    }`}
+                    className="p-4 rounded-2xl border border-[#D8E3EC] hover:border-[#567c8d] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all overflow-hidden bg-white"
                   >
                     <div className="flex items-center gap-3.5 min-w-0 w-full sm:w-auto">
                       {/* Fixed 64x64 Thumbnail Box */}
@@ -871,11 +826,7 @@ export default function AdminDashboardPage() {
                           alt={item.title}
                           style={{ width: "64px", height: "64px", objectFit: "cover", display: "block" }}
                         />
-                        {item.is_featured && (
-                          <span className="absolute top-1 left-1 p-0.5 rounded bg-amber-500 text-white text-[9px]" title="Top Hero Showcase">
-                            ⭐
-                          </span>
-                        )}
+
                         {item.instagram_url && (
                           <span className="absolute bottom-1 right-1 p-0.5 rounded bg-rose-600 text-white text-[9px]" title="Instagram Link">
                             {extractInstagramInfo(item.instagram_url || "").type === "reel" ? "🎬" : "📸"}
@@ -886,11 +837,6 @@ export default function AdminDashboardPage() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
                           <h4 className="font-bold text-[#182b3f] text-sm sm:text-base truncate">{item.title}</h4>
-                          {item.is_featured && (
-                            <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[9px] font-extrabold flex items-center gap-0.5">
-                              ⭐ HERO PHOTO
-                            </span>
-                          )}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-[#50606c] mt-1">
                           <span className="font-extrabold text-[#182b3f]">
@@ -905,19 +851,6 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-shrink-0">
-                      {/* Set as Top Hero Showcase Button */}
-                      <button
-                        onClick={() => handleSetHeroShowcase(item.id, item.title)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1 shadow-sm ${
-                          item.is_featured
-                            ? "bg-amber-500 text-white border-amber-600"
-                            : "bg-white text-amber-900 border-amber-200 hover:bg-amber-100"
-                        }`}
-                        title="Set as 1 Top Hero Showcase photo"
-                      >
-                        <Star className={`w-3.5 h-3.5 ${item.is_featured ? "fill-white" : "fill-amber-400"}`} />
-                        <span>{item.is_featured ? "Hero Active ⭐" : "Set Hero ⭐"}</span>
-                      </button>
 
                       <button
                         onClick={() => handleToggleAvailable(item.id, item.is_available)}
