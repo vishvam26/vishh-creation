@@ -5,7 +5,7 @@ import { fetchAllProducts, getFeaturedHeroProductId, Product } from "@/lib/produ
 import { extractInstagramInfo } from "@/lib/instagramUtils";
 import { getArtistProfile, fetchArtistProfileAsync, ArtistProfile } from "@/lib/artist";
 import { SITE_CONFIG } from "@/lib/config";
-import { ShoppingBag, Search } from "lucide-react";
+import { ShoppingBag, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
