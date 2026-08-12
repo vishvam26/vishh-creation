@@ -5,14 +5,7 @@ import { fetchAllProducts, getFeaturedHeroProductId, Product } from "@/lib/produ
 import { extractInstagramInfo } from "@/lib/instagramUtils";
 import { getArtistProfile, fetchArtistProfileAsync, ArtistProfile } from "@/lib/artist";
 import { SITE_CONFIG } from "@/lib/config";
-import {
-  ShoppingBag,
-  RefreshCw,
-  Lock,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-} from "lucide-react";
+import { ShoppingBag, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -443,7 +436,7 @@ export default function HomePage() {
               const igInfo = product.instagram_url ? extractInstagramInfo(product.instagram_url) : null;
               const directPostUrl = igInfo?.shortcode ? `https://www.instagram.com/p/${igInfo.shortcode}/` : (product.instagram_url || targetUrl);
               const isReel = product.category === "Instagram Reels";
-              const displayPhoto = product.image_url || igInfo?.proxyImageUrl || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
+              const displayPhoto = product.image_url || (igInfo as any)?.proxyImageUrl || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
               return (
                 <div

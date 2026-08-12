@@ -186,7 +186,7 @@ export default function AdminDashboardPage() {
       const instaInfo = instagramUrl ? extractInstagramInfo(instagramUrl) : null;
       const finalImage =
         imagePreview ||
-        instaInfo?.proxyImageUrl ||
+        (instaInfo as any)?.proxyImageUrl ||
         "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
       const res = await createProductItem({
