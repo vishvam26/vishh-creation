@@ -9,6 +9,7 @@ import {
   updateProductItem,
   deleteProductItem,
   setFeaturedProduct,
+  saveHeroShowcaseToProductsTable,
   Product,
 } from "@/lib/products";
 import {
@@ -302,16 +303,24 @@ export default function AdminDashboardPage() {
 
     const showcaseConfig: HeroShowcaseConfig = {
       title: heroTitleInput.trim(),
-      category: heroCategoryInput,
+      category: "Original Paintings",
       price: Number(heroPriceInput) || 0,
       imageUrl: finalImage,
       instagramUrl: heroInstaInput.trim(),
     };
 
+    await saveHeroShowcaseToProductsTable({
+      title: heroTitleInput.trim(),
+      price: Number(heroPriceInput) || 0,
+      imageUrl: finalImage,
+      instagramUrl: heroInstaInput.trim(),
+    });
+
     await saveHeroShowcaseCloud(showcaseConfig);
     setArtistProfileState((prev) => ({ ...prev, heroShowcase: showcaseConfig }));
+    await refreshProducts();
     setIsSavingHero(false);
-    setToastMsg({ type: "success", text: "✨ Top Hero Showcase Banner saved & published for all visitors globally!" });
+    setToastMsg({ type: "success", text: "✨ Top Hero Showcase Banner saved directly to Supabase DB for all visitors!" });
   };
 
   // Logout

@@ -94,6 +94,7 @@ export default function HomePage() {
   }, []);
 
   const filteredProducts = products.filter((item) => {
+    if (item.category === "HERO_SHOWCASE") return false;
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -104,13 +105,18 @@ export default function HomePage() {
     return item.category === selectedCategory;
   });
 
+  const heroProduct =
+    products.find((p) => p.category === "HERO_SHOWCASE" || p.is_featured) ||
+    products[0] ||
+    null;
+
   const cloudShowcase = artistProfile?.heroShowcase;
 
-  const heroTitle = cloudShowcase?.title || products[0]?.title || "Radhe Shyam!!";
-  const heroPrice = cloudShowcase?.price ?? (products[0]?.price || 499986);
+  const heroTitle = heroProduct?.title || cloudShowcase?.title || "Radhe Shyam!!";
+  const heroPrice = heroProduct?.price ?? (cloudShowcase?.price || 499986);
   const heroPhoto =
+    heroProduct?.image_url ||
     cloudShowcase?.imageUrl ||
-    products[0]?.image_url ||
     "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
   const openVisualizer = (imageUrl?: string) => {

@@ -170,6 +170,113 @@ export async function setFeaturedProduct(id: string): Promise<{ success: boolean
   return { success: true, isCloud: Boolean(isSupabaseConfigured() && supabase) };
 }
 
+// Upload & save Hero Showcase banner item directly into Supabase products table (category: HERO_SHOWCASE)
+export async function saveHeroShowcaseToProductsTable(heroData: {
+  title: string;
+  price: number;
+  imageUrl: string;
+  instagramUrl?: string;
+}): Promise<{ success: boolean; isCloud: boolean }> {
+  let finalImageUrl = heroData.imageUrl || "";
+  const supabase = getSupabase();
+
+  // If photo is a base64 DataURL, upload to Supabase Storage Bucket first!
+  if (isSupabaseConfigured() && supabase && finalImageUrl.startsWith("data:")) {
+    try {
+      const blob = dataURLtoBlob(finalImageUrl);
+      const fileName = `hero-showcase-${Date.now()}.jpg`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("product-images")
+        .upload(fileName, blob, {
+          contentType: blob.type || "image/jpeg",
+          upsert: true,
+        });
+
+      if (!uploadError && uploadData) {
+        const { data: publicUrlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(uploadData.path);
+
+        if (publicUrlData?.publicUrl) {
+          finalImageUrl = publicUrlData.publicUrl;
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to upload hero banner to Supabase storage:", err);
+    }
+  }
+
+  const localList = getLocalProducts();
+  const existingHeroIndex = localList.findIndex((p) => p.category === "HERO_SHOWCASE" || p.id === "00000000-0000-0000-0000-000000000000");
+
+  const heroItem: Product = {
+    id: existingHeroIndex >= 0 ? localList[existingHeroIndex].id : "00000000-0000-0000-0000-000000000000",
+    title: heroData.title,
+    description: "Featured Top Hero Banner Artwork",
+    price: heroData.price,
+    category: "HERO_SHOWCASE",
+    image_url: finalImageUrl,
+    instagram_url: heroData.instagramUrl || undefined,
+    is_available: true,
+    is_featured: true,
+  };
+
+  let updatedList = localList.map((p) => ({ ...p, is_featured: false }));
+  if (existingHeroIndex >= 0) {
+    updatedList[existingHeroIndex] = heroItem;
+  } else {
+    updatedList = [heroItem, ...updatedList];
+  }
+  saveLocalProducts(updatedList);
+
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      // Unset all existing featured flags
+      await supabase.from("products").update({ is_featured: false }).neq("id", "000");
+
+      // Check if HERO_SHOWCASE row exists in Supabase
+      const { data: existingRows } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category", "HERO_SHOWCASE")
+        .limit(1);
+
+      if (existingRows && existingRows.length > 0) {
+        await supabase
+          .from("products")
+          .update({
+            title: heroData.title,
+            price: heroData.price,
+            image_url: finalImageUrl,
+            instagram_url: heroData.instagramUrl || null,
+            is_featured: true,
+          })
+          .eq("id", existingRows[0].id);
+      } else {
+        await supabase.from("products").insert([
+          {
+            id: generateUUID(),
+            title: heroData.title,
+            description: "Featured Top Hero Banner Artwork",
+            price: heroData.price,
+            category: "HERO_SHOWCASE",
+            image_url: finalImageUrl,
+            instagram_url: heroData.instagramUrl || null,
+            is_available: true,
+            is_featured: true,
+          },
+        ]);
+      }
+      return { success: true, isCloud: true };
+    } catch (err) {
+      console.warn("Supabase saveHeroShowcaseToProductsTable warning:", err);
+    }
+  }
+
+  return { success: true, isCloud: Boolean(isSupabaseConfigured() && supabase) };
+}
+
 // Upload image & insert row with valid UUID into Supabase products table
 export async function createProductItem(
   productData: Omit<Product, "id" | "created_at">
