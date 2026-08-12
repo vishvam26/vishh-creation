@@ -310,7 +310,7 @@ export async function updateProductItem(
       const { error } = await supabase.from("products").update(updates).eq("id", id);
       if (!error) return { success: true, isCloud: true };
     } catch (err) {
-      console.error("Supabase update error:", error);
+      console.error("Supabase update error:", err);
     }
   }
 
@@ -327,7 +327,7 @@ export async function deleteProductItem(id: string): Promise<{ success: boolean;
       const { error } = await supabase.from("products").delete().eq("id", id);
       if (!error) return { success: true, isCloud: true };
     } catch (err) {
-      console.error("Supabase delete error:", error);
+      console.error("Supabase delete error:", err);
     }
   }
 
