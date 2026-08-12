@@ -82,7 +82,7 @@ export async function fetchArtistProfileAsync(): Promise<ArtistProfile> {
         .select("*")
         .limit(1);
 
-      if (!error && data && data.length > 0 && data[0].photo_url) {
+      if (!error && data && data.length > 0) {
         let parsedShowcase: HeroShowcaseConfig | null = null;
         if (data[0].hero_showcase) {
           try {
