@@ -222,9 +222,10 @@ export async function saveHeroShowcaseToProductsTable(heroData: {
     instagram_url: heroData.instagramUrl || undefined,
     is_available: true,
     is_featured: true,
+    created_at: new Date().toISOString(),
   };
 
-  let updatedList = localList.map((p) => ({ ...p, is_featured: false }));
+  let updatedList: Product[] = localList.map((p) => ({ ...p, is_featured: false }));
   if (existingHeroIndex >= 0) {
     updatedList[existingHeroIndex] = heroItem;
   } else {
