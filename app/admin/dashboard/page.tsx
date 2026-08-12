@@ -278,8 +278,8 @@ export default function AdminDashboardPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const compressed = await validateAndCompressImage(file);
-      setHeroPhotoPreview(compressed);
+      const result = await validateAndCompressImage(file);
+      setHeroPhotoPreview(result.dataUrl);
     } catch (err: any) {
       setToastMsg({ type: "error", text: err.message || "Invalid image file" });
     }
