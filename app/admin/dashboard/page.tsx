@@ -11,7 +11,6 @@ import {
   Product,
 } from "@/lib/products";
 import {
-  getArtistProfile,
   fetchArtistProfileAsync,
   saveArtistProfilePermanent,
   ArtistProfile,
@@ -19,21 +18,6 @@ import {
 import { validateAndCompressImage } from "@/lib/imageUtils";
 import { extractInstagramInfo, InstagramInfo } from "@/lib/instagramUtils";
 import { SITE_CONFIG } from "@/lib/config";
-import {
-  UploadCloud,
-  PlusCircle,
-  Trash2,
-  AlertTriangle,
-  LogOut,
-  Sparkles,
-  RefreshCw,
-  CheckCircle2,
-  Video,
-  Image as ImageIcon,
-  ExternalLink,
-  Star,
-  UserCheck,
-} from "lucide-react";
 
 export default function AdminDashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
