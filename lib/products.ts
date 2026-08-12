@@ -140,16 +140,24 @@ export async function fetchAllProducts(): Promise<{ products: Product[]; isCloud
   return { products: getLocalProducts(), isCloud: false };
 }
 
-// Set a single product as the featured Hero Showcase photo
+// Set a single product as the featured Hero Showcase photo (Synced for all visitors)
 export async function setFeaturedProduct(id: string): Promise<{ success: boolean; isCloud: boolean }> {
   setFeaturedHeroProductId(id);
+
+  // Update local list first so UI updates immediately
+  const localList = getLocalProducts();
+  const updatedList = localList.map((item) => ({
+    ...item,
+    is_featured: item.id === id,
+  }));
+  saveLocalProducts(updatedList);
 
   const supabase = getSupabase();
   if (isSupabaseConfigured() && supabase) {
     try {
-      // Unset all existing featured items
+      // Unset all existing featured items in Supabase
       await supabase.from("products").update({ is_featured: false }).neq("id", "000");
-      // Set target item as featured
+      // Set target item as featured in Supabase
       const { error } = await supabase.from("products").update({ is_featured: true }).eq("id", id);
       if (!error) return { success: true, isCloud: true };
     } catch (err) {
@@ -157,13 +165,7 @@ export async function setFeaturedProduct(id: string): Promise<{ success: boolean
     }
   }
 
-  const localList = getLocalProducts();
-  const updatedList = localList.map((item) => ({
-    ...item,
-    is_featured: item.id === id,
-  }));
-  saveLocalProducts(updatedList);
-  return { success: true, isCloud: false };
+  return { success: true, isCloud: Boolean(isSupabaseConfigured() && supabase) };
 }
 
 // Upload image & insert row with valid UUID into Supabase products table

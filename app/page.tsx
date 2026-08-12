@@ -105,8 +105,8 @@ export default function HomePage() {
   });
 
   const featuredHeroItem =
-    products.find((p) => p.id === heroFeaturedId) ||
     products.find((p) => p.is_featured) ||
+    products.find((p) => p.id === heroFeaturedId) ||
     products[0] ||
     null;
 
