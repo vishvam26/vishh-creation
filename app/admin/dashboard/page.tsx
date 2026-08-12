@@ -612,64 +612,130 @@ export default function AdminDashboardPage() {
             </form>
           </div>
 
-          {/* 🌟 Direct Supabase Cloud Hero Showcase Manager */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-amber-300 bg-amber-50/20 shadow-sm space-y-5 text-left">
-            <div className="flex items-center justify-between border-b border-amber-200 pb-3">
+          {/* 🖼️ Standalone Top Hero Showcase Photo Manager */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-[#567c8d] shadow-md space-y-5 text-left">
+            <div className="flex items-center justify-between border-b border-[#D8E3EC] pb-3">
               <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+                <ImageIcon className="w-5 h-5 text-[#567c8d]" />
                 <h2 className="font-heading text-lg font-bold text-[#182b3f]">
-                  Main Website Top Hero Showcase Manager
+                  Upload Top Hero Banner Photo (Shows at Top of Website)
                 </h2>
               </div>
-              <span className="text-[11px] bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full shadow-sm">
-                ✨ Displays on Front Page for ALL Visitors
+              <span className="text-[11px] bg-[#eef4f8] text-[#182b3f] font-extrabold px-3 py-1 rounded-full border border-[#D8E3EC]">
+                ✨ Displays for ALL Visitors
               </span>
             </div>
 
             <p className="text-xs text-[#50606c] leading-relaxed">
-              Tap <strong>"SET AS HERO BANNER"</strong> on any artwork below to save it directly into Supabase Cloud DB as the <strong>Main Website Top Hero Showcase Banner</strong> for all visitors globally:
+              Upload the photo and details for the <strong>Top Hero Banner</strong> below. This photo will be stored in Supabase Cloud DB and shown at the top of your website for all visitors globally.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[350px] overflow-y-auto pr-1">
-              {products.map((p) => {
-                const isSelectedHero = p.is_featured;
+            {/* Quick Fill from Existing Paintings Dropdown */}
+            {products.length > 0 && (
+              <div className="bg-[#f8fafc] p-3.5 rounded-2xl border border-[#e2e8f0]">
+                <label className="block text-[11px] font-bold text-[#182b3f] uppercase tracking-wider mb-1.5">
+                  ⚡ Auto-Fill from Uploaded Paintings/Crochet (Optional):
+                </label>
+                <select
+                  onChange={(e) => {
+                    const selected = products.find((p) => p.id === e.target.value);
+                    if (selected) {
+                      setHeroTitleInput(selected.title);
+                      setHeroPriceInput(selected.price.toString());
+                      setHeroPhotoPreview(selected.image_url);
+                      setHeroInstaInput(selected.instagram_url || "");
+                    }
+                  }}
+                  className="w-full bg-white border border-[#cbd5e1] text-xs font-semibold text-[#182b3f] rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-[#567c8d]"
+                >
+                  <option value="">-- Choose any existing item to auto-fill fields --</option>
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.title} - ₹{p.price.toLocaleString("en-IN")} ({p.category})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-                return (
-                  <div
-                    key={p.id}
-                    className={`p-3.5 rounded-2xl border text-left flex items-center justify-between gap-3 transition-all ${
-                      isSelectedHero
-                        ? "bg-amber-100/70 border-amber-400 ring-2 ring-amber-400/50 shadow-sm"
-                        : "bg-white border-[#D8E3EC] hover:bg-slate-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img src={p.image_url} alt={p.title} className="w-12 h-12 rounded-xl object-cover border border-[#D8E3EC]" />
-                      <div className="min-w-0">
-                        <div className="font-bold text-xs text-[#182b3f] truncate">{p.title}</div>
-                        <div className="text-[10px] text-amber-800 font-bold mt-0.5">₹{p.price.toLocaleString("en-IN")} ({p.category})</div>
-                      </div>
+            <form onSubmit={handleSaveHeroShowcase} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                    Hero Artwork Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={heroTitleInput}
+                    onChange={(e) => setHeroTitleInput(e.target.value)}
+                    placeholder="e.g. Radhe Shyam!!"
+                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-1">
+                    Price (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={heroPriceInput}
+                    onChange={(e) => setHeroPriceInput(e.target.value)}
+                    placeholder="e.g. 499986"
+                    className="w-full bg-[#fcfaf8] border border-[#D8E3EC] rounded-xl p-3 text-xs font-semibold text-[#182b3f] outline-none focus:ring-2 focus:ring-[#567c8d]"
+                  />
+                </div>
+              </div>
+
+              {/* Photo Upload & Preview */}
+              <div>
+                <label className="block text-xs font-bold text-[#182b3f] uppercase tracking-wider mb-2">
+                  Hero Banner Photo *
+                </label>
+                <div className="flex items-center gap-4">
+                  {heroPhotoPreview ? (
+                    <div className="w-24 h-24 rounded-2xl overflow-hidden bg-slate-900 border-2 border-[#D8E3EC] flex-shrink-0 relative shadow-sm">
+                      <img src={heroPhotoPreview} alt="Hero Banner Preview" className="w-full h-full object-cover" />
                     </div>
+                  ) : (
+                    <div className="w-24 h-24 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 flex-shrink-0">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
 
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        await setFeaturedProduct(p.id);
-                        refreshProducts();
-                        setToastMsg({ type: "success", text: `⭐ "${p.title}" is now saved in Supabase as the Top Hero Banner for all website visitors!` });
-                      }}
-                      className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-all shadow-sm flex-shrink-0 ${
-                        isSelectedHero
-                          ? "bg-amber-500 text-white font-extrabold cursor-default"
-                          : "bg-[#182b3f] text-white hover:bg-[#111f2e]"
-                      }`}
-                    >
-                      {isSelectedHero ? "⭐ ACTIVE HERO" : "SET AS HERO BANNER"}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                  <label className="flex-1 cursor-pointer">
+                    <span className="bg-[#f3ede9] hover:bg-[#d1e2ef] text-[#182b3f] border border-[#D8E3EC] text-xs font-bold py-2.5 px-4 rounded-full inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                      <UploadCloud className="w-4 h-4 text-[#567c8d]" />
+                      <span>Upload Hero Photo File</span>
+                    </span>
+                    <input type="file" accept="image/*" onChange={handleHeroPhotoChange} className="hidden" />
+                    <span className="block text-[11px] text-[#50606c] mt-1.5">
+                      Select any image file from your phone/laptop to set as Top Hero Banner
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSavingHero}
+                className="w-full bg-[#2f4156] hover:bg-[#182b3f] text-white font-extrabold py-3.5 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-95 disabled:opacity-70"
+              >
+                {isSavingHero ? (
+                  <span className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Uploading Image &amp; Publishing to Supabase...</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Save &amp; Publish Top Hero Showcase Photo</span>
+                  </span>
+                )}
+              </button>
+            </form>
           </div>
 
           {/* 👩‍🎨 Update Artist Profile & Photo (Vishva) Box */}

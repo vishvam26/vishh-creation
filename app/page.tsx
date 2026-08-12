@@ -104,19 +104,13 @@ export default function HomePage() {
     return item.category === selectedCategory;
   });
 
-  const featuredHeroItem =
-    products.find((p) => p.is_featured) ||
-    products[0] ||
-    null;
+  const cloudShowcase = artistProfile?.heroShowcase;
 
-  const heroTitle = featuredHeroItem?.title || "Radhe Shyam!!";
-  const heroPrice = featuredHeroItem?.price || 499986;
-  const heroIgUrl = featuredHeroItem?.instagram_url;
-
-  const heroIgInfo = heroIgUrl ? extractInstagramInfo(heroIgUrl) : null;
+  const heroTitle = cloudShowcase?.title || products[0]?.title || "Radhe Shyam!!";
+  const heroPrice = cloudShowcase?.price ?? (products[0]?.price || 499986);
   const heroPhoto =
-    featuredHeroItem?.image_url ||
-    (heroIgInfo as any)?.proxyImageUrl ||
+    cloudShowcase?.imageUrl ||
+    products[0]?.image_url ||
     "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
   const openVisualizer = (imageUrl?: string) => {
