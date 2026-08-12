@@ -15,7 +15,9 @@ import {
   getArtistProfile,
   fetchArtistProfileAsync,
   saveArtistProfilePermanent,
+  saveHeroShowcaseCloud,
   ArtistProfile,
+  HeroShowcaseConfig,
 } from "@/lib/artist";
 import { validateAndCompressImage } from "@/lib/imageUtils";
 import { extractInstagramInfo, InstagramInfo } from "@/lib/instagramUtils";
@@ -552,6 +554,75 @@ export default function AdminDashboardPage() {
                 )}
               </button>
             </form>
+          </div>
+
+          {/* 🌟 Permanent Featured Hero Showcase Manager Box */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-amber-300 bg-amber-50/20 shadow-sm space-y-5 text-left">
+            <div className="flex items-center justify-between border-b border-amber-200 pb-3">
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+                <h2 className="font-heading text-lg font-bold text-[#182b3f]">
+                  Global Top Hero Showcase Manager
+                </h2>
+              </div>
+              <span className="text-[11px] bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full shadow-sm">
+                ✨ Displays on Front Page for ALL Visitors
+              </span>
+            </div>
+
+            <p className="text-xs text-[#50606c] leading-relaxed">
+              Tap <strong>"SET HERO"</strong> on any artwork below to make it the <strong>Permanent Front Page Hero Showcase Artwork</strong> for all users globally:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[320px] overflow-y-auto pr-1">
+              {products.map((p) => {
+                const isSelectedHero = artistProfile.heroShowcase?.title === p.title || p.is_featured;
+
+                return (
+                  <div
+                    key={p.id}
+                    className={`p-3 rounded-2xl border text-left flex items-center justify-between gap-3 transition-all ${
+                      isSelectedHero
+                        ? "bg-amber-100/60 border-amber-400 ring-2 ring-amber-400/50 shadow-sm"
+                        : "bg-white border-[#D8E3EC] hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img src={p.image_url} alt={p.title} className="w-12 h-12 rounded-xl object-cover border border-[#D8E3EC]" />
+                      <div className="min-w-0">
+                        <div className="font-bold text-xs text-[#182b3f] truncate">{p.title}</div>
+                        <div className="text-[10px] text-amber-800 font-bold mt-0.5">₹{p.price.toLocaleString("en-IN")}</div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await setFeaturedProduct(p.id);
+                        const showcase: HeroShowcaseConfig = {
+                          title: p.title,
+                          category: p.category,
+                          price: p.price,
+                          imageUrl: p.image_url,
+                          instagramUrl: p.instagram_url,
+                        };
+                        await saveHeroShowcaseCloud(showcase);
+                        setArtistProfileState({ ...artistProfile, heroShowcase: showcase });
+                        refreshProducts();
+                        setToastMsg({ type: "success", text: `⭐ "${p.title}" is now the Global Hero Showcase Artwork for all visitors!` });
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-all shadow-sm flex-shrink-0 ${
+                        isSelectedHero
+                          ? "bg-amber-500 text-white font-extrabold"
+                          : "bg-[#182b3f] text-white hover:bg-[#111f2e]"
+                      }`}
+                    >
+                      {isSelectedHero ? "⭐ ACTIVE HERO" : "SET HERO"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* 👩‍🎨 Update Artist Profile & Photo (Vishva) Box */}

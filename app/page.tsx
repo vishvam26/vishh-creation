@@ -104,6 +104,8 @@ export default function HomePage() {
     return item.category === selectedCategory;
   });
 
+  const cloudShowcase = artistProfile?.heroShowcase;
+
   const featuredHeroItem =
     products.find((p) => p.is_featured) ||
     products.find((p) => p.id === artistProfile?.featuredProductId) ||
@@ -111,8 +113,12 @@ export default function HomePage() {
     products[0] ||
     null;
 
-  const heroIgInfo = featuredHeroItem?.instagram_url ? extractInstagramInfo(featuredHeroItem.instagram_url) : null;
-  const heroPhoto = heroIgInfo?.proxyImageUrl || featuredHeroItem?.image_url;
+  const heroTitle = cloudShowcase?.title || featuredHeroItem?.title || "radhe shyamm!!";
+  const heroPrice = cloudShowcase?.price || featuredHeroItem?.price || 499986;
+  const heroIgUrl = cloudShowcase?.instagramUrl || featuredHeroItem?.instagram_url;
+
+  const heroIgInfo = heroIgUrl ? extractInstagramInfo(heroIgUrl) : null;
+  const heroPhoto = cloudShowcase?.imageUrl || heroIgInfo?.proxyImageUrl || featuredHeroItem?.image_url || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
   const openVisualizer = (imageUrl?: string) => {
     if (imageUrl) setVisualizerArtUrl(imageUrl);
@@ -234,26 +240,24 @@ export default function HomePage() {
                 />
 
                 {/* Floating Bottom Card Badge */}
-                {featuredHeroItem && (
-                  <div className="absolute bottom-2.5 left-2.5 z-20 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-lg border border-[#D8E3EC] flex items-center gap-2 active:scale-95 transition-transform">
-                    <img
-                      src={heroPhoto || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop"}
-                      alt={featuredHeroItem.title}
-                      className="w-8 h-8 rounded-xl object-cover border border-[#D8E3EC]"
-                    />
-                    <div>
-                      <span className="text-[8.5px] font-extrabold uppercase tracking-wider text-[#567c8d] block flex items-center gap-0.5">
-                        TAP FOR 3D WALL VIEW 🔍
-                      </span>
-                      <p className="font-extrabold text-[11px] text-[#182b3f] truncate max-w-[120px]">
-                        {featuredHeroItem.title}
-                      </p>
-                      <p className="text-[9.5px] text-[#50606c] font-bold">
-                        ₹{featuredHeroItem.price.toLocaleString("en-IN")} ★ 5.0
-                      </p>
-                    </div>
+                <div className="absolute bottom-2.5 left-2.5 z-20 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-lg border border-[#D8E3EC] flex items-center gap-2 active:scale-95 transition-transform">
+                  <img
+                    src={heroPhoto}
+                    alt={heroTitle}
+                    className="w-8 h-8 rounded-xl object-cover border border-[#D8E3EC]"
+                  />
+                  <div>
+                    <span className="text-[8.5px] font-extrabold uppercase tracking-wider text-[#567c8d] block flex items-center gap-0.5">
+                      TAP FOR 3D WALL VIEW 🔍
+                    </span>
+                    <p className="font-extrabold text-[11px] text-[#182b3f] truncate max-w-[120px]">
+                      {heroTitle}
+                    </p>
+                    <p className="text-[9.5px] text-[#50606c] font-bold">
+                      ₹{heroPrice.toLocaleString("en-IN")} ★ 5.0
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>

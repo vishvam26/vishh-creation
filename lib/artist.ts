@@ -1,10 +1,27 @@
 import { getSupabase, isSupabaseConfigured } from "./supabase";
 
+export interface HeroShowcaseConfig {
+  title: string;
+  category: string;
+  price: number;
+  imageUrl: string;
+  instagramUrl?: string;
+}
+
+export const DEFAULT_HERO_SHOWCASE: HeroShowcaseConfig = {
+  title: "radhe shyamm!!",
+  category: "Original Paintings",
+  price: 499986,
+  imageUrl: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop",
+  instagramUrl: "",
+};
+
 export interface ArtistProfile {
   name: string;
   photoUrl: string;
   bio: string;
   featuredProductId?: string | null;
+  heroShowcase?: HeroShowcaseConfig | null;
 }
 
 export const DEFAULT_ARTIST_PROFILE: ArtistProfile = {
@@ -12,6 +29,7 @@ export const DEFAULT_ARTIST_PROFILE: ArtistProfile = {
   photoUrl: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=400&auto=format&fit=crop",
   bio: "Every artwork and crochet creation is 100% handcrafted in small batches by Vishva in her home studio. Check out her Instagram profiles @__vishh.art__ (Art) and @vishvayi._ (Crochet) to see all her art posts and behind-the-scenes craft videos!",
   featuredProductId: null,
+  heroShowcase: DEFAULT_HERO_SHOWCASE,
 };
 
 const ARTIST_STORAGE_KEY = "vishart_artist_profile_v3";
@@ -65,11 +83,19 @@ export async function fetchArtistProfileAsync(): Promise<ArtistProfile> {
         .limit(1);
 
       if (!error && data && data.length > 0 && data[0].photo_url) {
+        let parsedShowcase: HeroShowcaseConfig | null = null;
+        if (data[0].hero_showcase) {
+          try {
+            parsedShowcase = typeof data[0].hero_showcase === "string" ? JSON.parse(data[0].hero_showcase) : data[0].hero_showcase;
+          } catch (e) {}
+        }
+
         const fetched: ArtistProfile = {
           name: data[0].name || local.name,
           photoUrl: data[0].photo_url || local.photoUrl,
           bio: data[0].bio || local.bio,
           featuredProductId: data[0].featured_product_id || local.featuredProductId || null,
+          heroShowcase: parsedShowcase || local.heroShowcase || DEFAULT_HERO_SHOWCASE,
         };
         saveLocalArtistProfile(fetched);
         return fetched;
@@ -161,6 +187,29 @@ export async function saveFeaturedProductIdCloud(id: string): Promise<void> {
       });
     } catch (err) {
       console.warn("Supabase upsert featured_product_id warning:", err);
+    }
+  }
+}
+
+export async function saveHeroShowcaseCloud(showcase: HeroShowcaseConfig): Promise<void> {
+  const current = getArtistProfile();
+  const updated: ArtistProfile = { ...current, heroShowcase: showcase };
+  saveLocalArtistProfile(updated);
+
+  const supabase = getSupabase();
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      await supabase.from("artist_profile").upsert({
+        id: 1,
+        name: updated.name,
+        photo_url: updated.photoUrl,
+        bio: updated.bio,
+        featured_product_id: updated.featuredProductId || null,
+        hero_showcase: JSON.stringify(showcase),
+        updated_at: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.warn("Supabase upsert hero_showcase warning:", err);
     }
   }
 }
