@@ -17,7 +17,7 @@ import {
   ArtistProfile,
 } from "@/lib/artist";
 import { validateAndCompressImage } from "@/lib/imageUtils";
-import { extractInstagramInfo } from "@/lib/instagramUtils";
+import { extractInstagramInfo, InstagramInfo } from "@/lib/instagramUtils";
 import { SITE_CONFIG } from "@/lib/config";
 import {
   UploadCloud,
@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
 
   // Instagram Link State
   const [instagramUrl, setInstagramUrl] = useState("");
-  const [instaInfo, setInstaInfo] = useState<{ shortcode: string | null; type: "reel" | "post" | "unknown"; embedUrl: string } | null>(null);
+  const [instaInfo, setInstaInfo] = useState<InstagramInfo | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMsg, setToastMsg] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
@@ -186,7 +186,7 @@ export default function AdminDashboardPage() {
       const instaInfo = instagramUrl ? extractInstagramInfo(instagramUrl) : null;
       const finalImage =
         imagePreview ||
-        (instaInfo as any)?.proxyImageUrl ||
+        instaInfo?.proxyImageUrl ||
         "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
       const res = await createProductItem({
