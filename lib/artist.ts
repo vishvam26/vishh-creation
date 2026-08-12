@@ -159,6 +159,8 @@ export async function saveArtistProfilePermanent(
         name: finalProfile.name,
         photo_url: finalProfile.photoUrl,
         bio: finalProfile.bio,
+        featured_product_id: current.featuredProductId || null,
+        hero_showcase: current.heroShowcase ? JSON.stringify(current.heroShowcase) : null,
         updated_at: new Date().toISOString(),
       });
     } catch (err) {
@@ -183,6 +185,7 @@ export async function saveFeaturedProductIdCloud(id: string): Promise<void> {
         photo_url: updated.photoUrl,
         bio: updated.bio,
         featured_product_id: id,
+        hero_showcase: current.heroShowcase ? JSON.stringify(current.heroShowcase) : null,
         updated_at: new Date().toISOString(),
       });
     } catch (err) {
