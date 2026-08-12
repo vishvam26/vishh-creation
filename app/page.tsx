@@ -224,49 +224,86 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right: Featured Thumbnail Card */}
-          {heroPhoto && (
-            <div className="w-full lg:w-[380px] flex-shrink-0 flex items-center justify-center">
-              <div className="relative group w-full max-w-[380px]">
-                {/* Main Image Card */}
-                <div
-                  className="relative rounded-[28px] overflow-hidden shadow-2xl border-4 border-white cursor-pointer"
-                  style={{ aspectRatio: "4/5" }}
-                  onClick={() => openVisualizer(heroPhoto)}
-                >
-                  <img
-                    src={heroPhoto}
-                    alt={heroTitle}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+          {/* Right: Premium Stacked Cards */}
+          {products.filter(p => p.image_url).length >= 1 && (
+            <div className="w-full lg:w-[420px] flex-shrink-0 flex items-center justify-center py-6">
+              <div className="relative w-[300px] h-[370px] sm:w-[340px] sm:h-[420px]">
 
-                  {/* Gradient overlay at bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                {/* Card 3 — Back left, most tilted */}
+                {products.filter(p => p.image_url)[2] && (
+                  <div
+                    className="absolute w-[200px] h-[260px] sm:w-[230px] sm:h-[290px] rounded-[22px] overflow-hidden shadow-xl border-4 border-white"
+                    style={{
+                      top: "30px",
+                      left: "-10px",
+                      transform: "rotate(-12deg)",
+                      zIndex: 1,
+                    }}
+                  >
+                    <img
+                      src={products.filter(p => p.image_url)[2].image_url}
+                      alt={products.filter(p => p.image_url)[2].title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/15" />
+                  </div>
+                )}
 
-                  {/* Bottom info strip */}
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <div className="text-white/80 text-[10px] font-bold uppercase tracking-widest mb-1">
-                      ✨ Featured Artwork
-                    </div>
-                    <div className="text-white font-extrabold text-lg leading-tight truncate">
-                      {heroTitle}
-                    </div>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-amber-300 font-extrabold text-base">
-                        ₹{heroPrice.toLocaleString("en-IN")}
-                      </span>
-                      <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1.5 rounded-full border border-white/30">
-                        🔍 Tap for 3D View
-                      </span>
+                {/* Card 2 — Middle right, slight tilt */}
+                {products.filter(p => p.image_url)[1] && (
+                  <div
+                    className="absolute w-[200px] h-[260px] sm:w-[230px] sm:h-[290px] rounded-[22px] overflow-hidden shadow-xl border-4 border-white"
+                    style={{
+                      top: "20px",
+                      right: "-10px",
+                      transform: "rotate(8deg)",
+                      zIndex: 2,
+                    }}
+                  >
+                    <img
+                      src={products.filter(p => p.image_url)[1].image_url}
+                      alt={products.filter(p => p.image_url)[1].title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/10" />
+                  </div>
+                )}
+
+                {/* Card 1 — Front center, straight (most prominent) */}
+                {products.filter(p => p.image_url)[0] && (
+                  <div
+                    className="absolute w-[220px] h-[290px] sm:w-[255px] sm:h-[330px] rounded-[22px] overflow-hidden shadow-2xl border-4 border-white cursor-pointer group"
+                    style={{
+                      bottom: "0px",
+                      left: "50%",
+                      transform: "translateX(-50%) rotate(-2deg)",
+                      zIndex: 3,
+                    }}
+                    onClick={() => openVisualizer(products.filter(p => p.image_url)[0].image_url)}
+                  >
+                    <img
+                      src={products.filter(p => p.image_url)[0].image_url}
+                      alt={products.filter(p => p.image_url)[0].title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {/* Bottom label */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <p className="text-white font-bold text-xs truncate">
+                        {products.filter(p => p.image_url)[0].title}
+                      </p>
+                      <p className="text-amber-300 font-extrabold text-sm">
+                        ₹{products.filter(p => p.image_url)[0].price.toLocaleString("en-IN")}
+                      </p>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Decorative glow ring */}
-                <div className="absolute -inset-1 rounded-[32px] bg-gradient-to-br from-amber-200/40 via-[#D8E3EC]/20 to-[#567c8d]/30 blur-lg -z-10 group-hover:opacity-80 transition-opacity" />
+                {/* Decorative dots / blob behind */}
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[180px] h-[30px] bg-black/10 blur-xl rounded-full -z-0" />
               </div>
             </div>
           )}
+
         </div>
       </section>
 
