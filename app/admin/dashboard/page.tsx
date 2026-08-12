@@ -183,6 +183,7 @@ export default function AdminDashboardPage() {
     setIsSubmitting(true);
 
     try {
+      const instaInfo = instagramUrl ? extractInstagramInfo(instagramUrl) : null;
       const finalImage =
         imagePreview ||
         instaInfo?.proxyImageUrl ||

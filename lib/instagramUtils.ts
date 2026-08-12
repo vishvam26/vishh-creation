@@ -1,10 +1,12 @@
-export function extractInstagramInfo(url: string): {
+export interface InstagramInfo {
   shortcode: string | null;
   type: "reel" | "post" | "unknown";
   embedUrl: string;
   mediaUrl: string;
   proxyImageUrl: string;
-} {
+}
+
+export function extractInstagramInfo(url: string): InstagramInfo {
   if (!url || typeof url !== "string") {
     return { shortcode: null, type: "unknown", embedUrl: "", mediaUrl: "", proxyImageUrl: "" };
   }
