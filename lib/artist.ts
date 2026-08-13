@@ -82,6 +82,10 @@ export async function fetchArtistProfileAsync(): Promise<ArtistProfile> {
         .select("*")
         .limit(1);
 
+      if (error) {
+        console.warn("fetchArtistProfileAsync error:", error.message);
+      }
+
       if (!error && data && data.length > 0) {
         let parsedShowcase: HeroShowcaseConfig | null = null;
         if (data[0].hero_showcase) {
@@ -90,6 +94,7 @@ export async function fetchArtistProfileAsync(): Promise<ArtistProfile> {
           } catch (e) {}
         }
 
+        // Use Supabase values if available, fall back to local ONLY if Supabase is empty/null
         const fetched: ArtistProfile = {
           name: data[0].name || local.name,
           photoUrl: data[0].photo_url || local.photoUrl,
@@ -100,12 +105,27 @@ export async function fetchArtistProfileAsync(): Promise<ArtistProfile> {
         saveLocalArtistProfile(fetched);
         return fetched;
       }
+
+      // No row in Supabase yet — create one from local profile
+      if (!error && data && data.length === 0) {
+        console.log("No artist_profile row in Supabase, creating one...");
+        await supabase.from("artist_profile").upsert({
+          id: 1,
+          name: local.name,
+          photo_url: local.photoUrl,
+          bio: local.bio,
+          featured_product_id: local.featuredProductId || null,
+          hero_showcase: local.heroShowcase ? JSON.stringify(local.heroShowcase) : null,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "id" });
+      }
     } catch (err) {
       console.warn("Supabase fetchArtistProfileAsync exception:", err);
     }
   }
   return local;
 }
+
 
 // Save artist profile permanently to Supabase & Local Storage
 export async function saveArtistProfilePermanent(
@@ -154,7 +174,7 @@ export async function saveArtistProfilePermanent(
   if (isSupabaseConfigured() && supabase) {
     try {
       // Upsert into Supabase table artist_profile
-      await supabase.from("artist_profile").upsert({
+      const { error: upsertErr } = await supabase.from("artist_profile").upsert({
         id: 1,
         name: finalProfile.name,
         photo_url: finalProfile.photoUrl,
@@ -162,7 +182,10 @@ export async function saveArtistProfilePermanent(
         featured_product_id: current.featuredProductId || null,
         hero_showcase: current.heroShowcase ? JSON.stringify(current.heroShowcase) : null,
         updated_at: new Date().toISOString(),
-      });
+      }, { onConflict: "id" });
+      if (upsertErr) {
+        console.warn("Supabase upsert artist_profile error:", upsertErr.message);
+      }
     } catch (err) {
       console.warn("Supabase upsert artist_profile warning:", err);
     }
@@ -187,7 +210,7 @@ export async function saveFeaturedProductIdCloud(id: string): Promise<void> {
         featured_product_id: id,
         hero_showcase: current.heroShowcase ? JSON.stringify(current.heroShowcase) : null,
         updated_at: new Date().toISOString(),
-      });
+      }, { onConflict: "id" });
     } catch (err) {
       console.warn("Supabase upsert featured_product_id warning:", err);
     }
@@ -244,7 +267,7 @@ export async function saveHeroShowcaseCloud(showcase: HeroShowcaseConfig): Promi
         featured_product_id: updated.featuredProductId || null,
         hero_showcase: JSON.stringify(finalShowcase),
         updated_at: new Date().toISOString(),
-      });
+      }, { onConflict: "id" });
     } catch (err) {
       console.warn("Supabase upsert hero_showcase warning:", err);
     }
