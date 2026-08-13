@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { fetchAllProducts, getFeaturedHeroProductId, Product } from "@/lib/products";
 import { extractInstagramInfo } from "@/lib/instagramUtils";
-import { getArtistProfile, fetchArtistProfileAsync, ArtistProfile } from "@/lib/artist";
+import { getArtistProfile, fetchArtistProfileAsync, ArtistProfile, DEFAULT_ARTIST_PROFILE } from "@/lib/artist";
 import { SITE_CONFIG } from "@/lib/config";
 import {
   ShoppingBag,
@@ -23,8 +23,25 @@ export default function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [mouseDownStart, setMouseDownStart] = useState<number | null>(null);
+  const [isSwiping, setIsSwiping] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640);
+    setIsDesktop(window.innerWidth >= 1024);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [heroFeaturedId, setHeroFeaturedId] = useState<string | null>(null);
-  const [artistProfile, setArtistProfile] = useState<ArtistProfile>(getArtistProfile());
+  const [artistProfile, setArtistProfile] = useState<ArtistProfile>(DEFAULT_ARTIST_PROFILE);
 
   const defaultWallPhoto = "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1600&auto=format&fit=crop";
   const [showRoomVisualizer, setShowRoomVisualizer] = useState(false);
@@ -90,8 +107,52 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+    setArtistProfile(getArtistProfile());
     loadData();
   }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches[0]) {
+      setTouchStart(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart === null || !e.changedTouches[0]) return;
+    const diff = touchStart - e.changedTouches[0].clientX;
+    if (diff > 50) {
+      handleNextCarousel();
+    } else if (diff < -50) {
+      handlePrevCarousel();
+    }
+    setTouchStart(null);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest("a")) return;
+    setMouseDownStart(e.clientX);
+    setIsSwiping(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isSwiping || mouseDownStart === null) return;
+    const diff = mouseDownStart - e.clientX;
+    if (Math.abs(diff) > 70) {
+      if (diff > 0) {
+        handleNextCarousel();
+      } else {
+        handlePrevCarousel();
+      }
+      setIsSwiping(false);
+      setMouseDownStart(null);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsSwiping(false);
+    setMouseDownStart(null);
+  };
 
   const filteredProducts = products.filter((item) => {
     if (item.category === "HERO_SHOWCASE") return false;
@@ -145,8 +206,8 @@ export default function HomePage() {
   };
 
   return (
-    <div className="space-y-10">
-      <section className="sticky top-[75px] z-40 bg-[#f8f2ee]/95 backdrop-blur-md p-2.5 rounded-2xl border border-[#D8E3EC] shadow-sm">
+    <div className="space-y-6 lg:space-y-4">
+      <section className="bg-[#f8f2ee]/95 p-2.5 rounded-2xl border border-[#D8E3EC] shadow-sm">
         <div className="flex items-center justify-start gap-2 overflow-x-auto pb-0.5 no-scrollbar">
           {categoriesList.map((cat) => (
             <button
@@ -176,28 +237,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white/70 rounded-3xl p-6 sm:p-10 border border-[#D8E3EC]/80 shadow-sm">
+      <section className="bg-white/70 rounded-3xl p-5 sm:p-8 lg:p-5 border border-[#D8E3EC]/80 shadow-sm">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Left: Text Content */}
-          <div className="w-full lg:w-[52%] flex flex-col justify-center items-start text-left space-y-5">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-xs font-semibold uppercase tracking-wider shadow-sm">
+          <div className="w-full lg:w-[52%] flex flex-col justify-center items-start text-left space-y-4 sm:space-y-5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-[10px] sm:text-xs font-semibold uppercase tracking-wider shadow-sm max-w-full text-center">
               <span className="text-amber-500">✨</span>
               <span>Handmade Artwork &amp; Crochet Creations by Vishva</span>
             </div>
 
-            <h1 className="font-heading text-4xl sm:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
               Handcrafted Treasures <br />
               <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
             </h1>
 
-            <p className="text-[#50606c] text-sm sm:text-base max-w-xl leading-relaxed">
+            <p className="text-[#50606c] text-xs sm:text-sm md:text-base max-w-xl leading-relaxed">
               Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
               <a
                 href="#gallery"
-                className="bg-[#182b3f] hover:bg-[#111f2e] !text-white text-xs font-extrabold px-6 py-3.5 rounded-full transition-all shadow-md flex items-center gap-2"
+                className="bg-[#182b3f] hover:bg-[#111f2e] !text-white text-xs font-extrabold px-6 py-3.5 rounded-full transition-all shadow-md flex items-center gap-2 justify-center w-full sm:w-auto"
                 style={{ textDecoration: "none" }}
               >
                 <span className="!text-white font-bold">Explore Shop Collection</span>
@@ -207,7 +268,7 @@ export default function HomePage() {
                 href={SITE_CONFIG.artDmUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#2f4156] hover:bg-[#1f2d3d] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
+                className="bg-[#2f4156] hover:bg-[#1f2d3d] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm flex items-center gap-2 justify-center w-full sm:w-auto"
                 style={{ textDecoration: "none" }}
               >
                 <span className="!text-white font-bold">🎨 DM Art (@{SITE_CONFIG.artInstagram})</span>
@@ -216,7 +277,7 @@ export default function HomePage() {
                 href={SITE_CONFIG.crochetDmUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#567c8d] hover:bg-[#456574] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm"
+                className="bg-[#567c8d] hover:bg-[#456574] !text-white text-xs font-bold px-5 py-3.5 rounded-full transition-colors shadow-sm flex items-center gap-2 justify-center w-full sm:w-auto"
                 style={{ textDecoration: "none" }}
               >
                 <span className="!text-white font-bold">🧶 DM Crochet (@{SITE_CONFIG.crochetInstagram})</span>
@@ -226,21 +287,21 @@ export default function HomePage() {
 
           {/* Right: 🌸 Infinite Horizontal Photo Scroll Strip */}
           {products.filter(p => p.image_url).length >= 1 && (
-            <div className="w-full lg:w-[420px] flex-shrink-0 flex flex-col items-center justify-center gap-4 overflow-hidden py-4">
+            <div className="w-full lg:w-[340px] flex-shrink-0 flex flex-col items-center justify-center gap-3 overflow-hidden py-2 lg:py-1">
 
               {/* Label */}
-              <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest text-[#567c8d]">
+              <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest text-[#567c8d]">
                 <span>✨</span>
                 <span>Our Creations — Tap to Explore</span>
               </div>
 
               {/* Row 1 — scroll left */}
               <div className="w-full overflow-hidden rounded-2xl" style={{ maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)" }}>
-                <div className="flex gap-3 marquee-scroll-left" style={{ width: "max-content" }}>
+                <div className="flex gap-2.5 marquee-scroll-left" style={{ width: "max-content" }}>
                   {[...products.filter(p => p.image_url), ...products.filter(p => p.image_url)].map((p, i) => (
                     <div
                       key={i}
-                      className="flex-shrink-0 w-[130px] h-[130px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
+                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[100px] lg:h-[100px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
                       onClick={() => openVisualizer(p.image_url)}
                     >
                       <img
@@ -255,11 +316,11 @@ export default function HomePage() {
 
               {/* Row 2 — scroll right (opposite) */}
               <div className="w-full overflow-hidden rounded-2xl" style={{ maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)" }}>
-                <div className="flex gap-3 marquee-scroll-right" style={{ width: "max-content" }}>
+                <div className="flex gap-2.5 marquee-scroll-right" style={{ width: "max-content" }}>
                   {[...products.filter(p => p.image_url).slice().reverse(), ...products.filter(p => p.image_url).slice().reverse()].map((p, i) => (
                     <div
                       key={i}
-                      className="flex-shrink-0 w-[130px] h-[130px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
+                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[100px] lg:h-[100px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
                       onClick={() => openVisualizer(p.image_url)}
                     >
                       <img
@@ -274,11 +335,11 @@ export default function HomePage() {
 
               {/* Row 3 — scroll left again */}
               <div className="w-full overflow-hidden rounded-2xl" style={{ maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)" }}>
-                <div className="flex gap-3 marquee-scroll-left" style={{ width: "max-content", animationDelay: "-3s" }}>
+                <div className="flex gap-2.5 marquee-scroll-left" style={{ width: "max-content", animationDelay: "-3s" }}>
                   {[...products.filter(p => p.image_url), ...products.filter(p => p.image_url)].map((p, i) => (
                     <div
                       key={i}
-                      className="flex-shrink-0 w-[130px] h-[130px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
+                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[100px] lg:h-[100px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
                       onClick={() => openVisualizer(p.image_url)}
                     >
                       <img
@@ -296,12 +357,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-b from-[#f8f2ee] to-[#f3ede9] py-12 px-4 sm:px-8 rounded-3xl border border-[#D8E3EC] shadow-sm text-center relative overflow-hidden">
-        <div className="max-w-2xl mx-auto space-y-2 mb-8">
+      <section className="bg-gradient-to-b from-[#f8f2ee] to-[#f3ede9] py-6 sm:py-8 lg:py-5 px-4 sm:px-8 rounded-3xl border border-[#D8E3EC] shadow-sm text-center relative overflow-hidden">
+        <div className="max-w-2xl mx-auto space-y-2 mb-4 lg:mb-3">
           <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#567c8d] flex items-center justify-center gap-1">
             <span>✨</span> INTERACTIVE 3D ART GALLERY
           </span>
-          <h2 className="font-heading text-3xl sm:text-5xl font-bold text-[#182b3f]">
+          <h2 className="font-heading text-3xl sm:text-5xl lg:text-4xl font-bold text-[#182b3f]">
             Explore Masterpiece Gallery
           </h2>
           <p className="text-[#50606c] text-xs sm:text-sm">
@@ -309,18 +370,50 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="relative max-w-5xl mx-auto min-h-[360px] sm:min-h-[420px] flex items-center justify-center py-4">
+        <div
+          className="relative max-w-5xl mx-auto h-[380px] sm:h-[420px] lg:h-[345px] flex items-center justify-center py-4 select-none overflow-hidden"
+          style={{ perspective: "1000px" }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           <button
             onClick={handlePrevCarousel}
-            className="absolute left-2 sm:left-4 z-30 w-10 h-10 rounded-full bg-white text-[#182b3f] shadow-lg border border-[#D8E3EC] flex items-center justify-center hover:bg-slate-50 transition-transform active:scale-95"
+            className="absolute left-2 sm:left-4 z-40 w-10 h-10 rounded-full bg-white text-[#182b3f] shadow-lg border border-[#D8E3EC] flex items-center justify-center hover:bg-slate-50 transition-transform active:scale-95"
             title="Previous Masterpiece"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center justify-center gap-3 sm:gap-6 w-full overflow-hidden py-6 px-2">
+          <div
+            className="relative w-full h-full flex items-center justify-center"
+            style={{ transformStyle: "preserve-3d" }}
+          >
             {products.slice(0, 5).map((item, idx) => {
-              const isActive = idx === carouselIndex % Math.min(5, products.length);
+              const activeIndex = carouselIndex % Math.min(5, products.length);
+              const N = Math.min(5, products.length);
+              let offset = idx - activeIndex;
+              if (offset < -N / 2) offset += N;
+              if (offset > N / 2) offset -= N;
+
+              const absOffset = Math.abs(offset);
+              const isCenter = offset === 0;
+
+              // Coverflow offsets
+              const spacing = isMobile ? 75 : (isDesktop ? 110 : 140); 
+              const translateX = offset * spacing;
+              const scale = isCenter ? 1.05 : 1 - absOffset * 0.12;
+              const rotateY = offset * -25;
+              const translateZ = absOffset * -120;
+              const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.25;
+              const zIndex = 30 - absOffset;
+
+              const cardWidth = isMobile ? "210px" : (isDesktop ? "220px" : "260px");
+              const cardHeight = isMobile ? "290px" : (isDesktop ? "295px" : "350px");
+
               const igInfo = item.instagram_url ? extractInstagramInfo(item.instagram_url) : null;
               const photoUrl = igInfo?.proxyImageUrl || item.image_url;
 
@@ -328,36 +421,46 @@ export default function HomePage() {
                 <div
                   key={item.id || idx}
                   onClick={() => {
-                    setCarouselIndex(idx);
-                    setSelectedProduct(item);
+                    if (offset === 0) {
+                      setSelectedProduct(item);
+                    } else {
+                      setCarouselIndex(idx);
+                    }
                   }}
-                  className={`transition-all duration-500 ease-out transform cursor-pointer rounded-3xl overflow-hidden border border-[#D8E3EC] bg-white relative flex-shrink-0 ${
-                    isActive
-                      ? "w-[240px] sm:w-[300px] h-[340px] sm:h-[400px] z-20 shadow-2xl scale-105 ring-4 ring-[#182b3f]/20"
-                      : "w-[160px] sm:w-[210px] h-[260px] sm:h-[320px] z-10 opacity-70 scale-90 blur-[0.3px]"
+                  className={`absolute transition-all duration-700 cursor-pointer rounded-[24px] sm:rounded-[32px] overflow-hidden border border-[#D8E3EC] bg-white shadow-2xl flex-shrink-0 origin-center ${
+                    isCenter ? "ring-4 ring-[#182b3f]/15" : "hover:opacity-95"
                   }`}
+                  style={{
+                    width: cardWidth,
+                    height: cardHeight,
+                    transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                    zIndex: zIndex,
+                    opacity: opacity,
+                    transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s, z-index 0.6s",
+                  }}
                 >
-                  <img src={photoUrl} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={photoUrl} alt={item.title} className="w-full h-full object-cover select-none pointer-events-none" />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent p-4 flex flex-col justify-between text-left">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent p-4 sm:p-5 flex flex-col justify-between text-left select-none">
                     <div className="flex justify-end">
-                      <span className="bg-white/80 backdrop-blur-md text-[#182b3f] text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
-                        🔍 Tap HD
+                      <span className="bg-white/90 backdrop-blur-md text-[#182b3f] text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                        <span>🔍</span>
+                        <span>Tap HD</span>
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider block">
+                      <span className="text-[9px] sm:text-[10px] font-bold text-amber-300 uppercase tracking-wider block">
                         {item.category}
                       </span>
-                      <h4 className="font-heading font-bold text-white text-base sm:text-lg line-clamp-1">
+                      <h4 className="font-heading font-bold text-white text-sm sm:text-base md:text-lg line-clamp-1">
                         {item.title}
                       </h4>
                       <div className="flex items-center justify-between mt-1">
-                        <span className="text-white font-extrabold text-sm sm:text-base">
+                        <span className="text-white font-extrabold text-xs sm:text-sm md:text-base">
                           ₹{item.price.toLocaleString("en-IN")}
                         </span>
-                        <span className="text-[11px] text-white/90 underline font-semibold">
+                        <span className="text-[10px] sm:text-[11px] text-white/90 underline font-semibold">
                           View Item →
                         </span>
                       </div>
@@ -370,7 +473,7 @@ export default function HomePage() {
 
           <button
             onClick={handleNextCarousel}
-            className="absolute right-2 sm:right-4 z-30 w-10 h-10 rounded-full bg-white text-[#182b3f] shadow-lg border border-[#D8E3EC] flex items-center justify-center hover:bg-slate-50 transition-transform active:scale-95"
+            className="absolute right-2 sm:right-4 z-40 w-10 h-10 rounded-full bg-white text-[#182b3f] shadow-lg border border-[#D8E3EC] flex items-center justify-center hover:bg-slate-50 transition-transform active:scale-95"
             title="Next Masterpiece"
           >
             <ChevronRight className="w-5 h-5" />

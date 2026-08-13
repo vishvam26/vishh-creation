@@ -19,6 +19,7 @@ import {
   saveHeroShowcaseCloud,
   ArtistProfile,
   HeroShowcaseConfig,
+  DEFAULT_ARTIST_PROFILE,
 } from "@/lib/artist";
 import { validateAndCompressImage } from "@/lib/imageUtils";
 import { extractInstagramInfo, InstagramInfo } from "@/lib/instagramUtils";
@@ -57,17 +58,17 @@ export default function AdminDashboardPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Artist Profile State (Vishva's Photo & Bio)
-  const [artistProfile, setArtistProfileState] = useState<ArtistProfile>(getArtistProfile());
+  const [artistProfile, setArtistProfileState] = useState<ArtistProfile>(DEFAULT_ARTIST_PROFILE);
   const [artistPhotoPreview, setArtistPhotoPreview] = useState<string | null>(null);
-  const [artistName, setArtistName] = useState(artistProfile.name);
-  const [artistBio, setArtistBio] = useState(artistProfile.bio);
+  const [artistName, setArtistName] = useState(DEFAULT_ARTIST_PROFILE.name);
+  const [artistBio, setArtistBio] = useState(DEFAULT_ARTIST_PROFILE.bio);
 
   // Dedicated Hero Showcase Banner Manager State
-  const [heroTitleInput, setHeroTitleInput] = useState(artistProfile.heroShowcase?.title || "");
-  const [heroPriceInput, setHeroPriceInput] = useState(artistProfile.heroShowcase?.price?.toString() || "");
-  const [heroCategoryInput, setHeroCategoryInput] = useState(artistProfile.heroShowcase?.category || "Original Paintings");
-  const [heroPhotoPreview, setHeroPhotoPreview] = useState(artistProfile.heroShowcase?.imageUrl || "");
-  const [heroInstaInput, setHeroInstaInput] = useState(artistProfile.heroShowcase?.instagramUrl || "");
+  const [heroTitleInput, setHeroTitleInput] = useState("");
+  const [heroPriceInput, setHeroPriceInput] = useState("");
+  const [heroCategoryInput, setHeroCategoryInput] = useState("Original Paintings");
+  const [heroPhotoPreview, setHeroPhotoPreview] = useState("");
+  const [heroInstaInput, setHeroInstaInput] = useState("");
   const [isSavingHero, setIsSavingHero] = useState(false);
 
   // Instagram Link State
@@ -104,6 +105,18 @@ export default function AdminDashboardPage() {
   };
 
   useEffect(() => {
+    const profile = getArtistProfile();
+    setArtistProfileState(profile);
+    setArtistName(profile.name);
+    setArtistBio(profile.bio);
+    setArtistPhotoPreview(profile.photoUrl);
+    if (profile.heroShowcase) {
+      setHeroTitleInput(profile.heroShowcase.title || "");
+      setHeroPriceInput(profile.heroShowcase.price?.toString() || "");
+      setHeroCategoryInput(profile.heroShowcase.category || "Original Paintings");
+      setHeroPhotoPreview(profile.heroShowcase.imageUrl || "");
+      setHeroInstaInput(profile.heroShowcase.instagramUrl || "");
+    }
     refreshProducts();
   }, []);
 

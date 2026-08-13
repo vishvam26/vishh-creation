@@ -145,7 +145,7 @@ export default function RootLayout({
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+        <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-4 space-y-8 lg:space-y-6">
           {children}
         </main>
 
@@ -205,7 +205,7 @@ export default function RootLayout({
             </div>
           </div>
 
-          <div className="max-w-[1600px] mx-auto px-6 md:px-12 border-t border-white/20 pt-6 text-center text-xs text-white/50">
+          <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-6 md:px-12 border-t border-white/20 pt-6 text-center text-xs text-white/50">
             © {new Date().getFullYear()} VISHH CREATION. All Rights Reserved. Crafted for the Modern Artisan by Vishva ❤️
           </div>
         </footer>
