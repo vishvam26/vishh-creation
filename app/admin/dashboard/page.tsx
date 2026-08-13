@@ -77,6 +77,10 @@ export default function AdminDashboardPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastMsg, setToastMsg] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
 
+  // Confirm Delete Modal State
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmDeleteTitle, setConfirmDeleteTitle] = useState<string>("");
+
   // Load products & artist profile from Supabase
   const refreshProducts = async () => {
     setLoading(true);
@@ -262,16 +266,25 @@ export default function AdminDashboardPage() {
     setToastMsg({ type: "info", text: "Product availability status updated." });
   };
 
-  // Delete Item
-  const handleDelete = async (id: string, itemTitle: string) => {
-    if (confirm(`🗑️ Are you sure you want to delete "${itemTitle}" permanently from your store?`)) {
-      const res = await deleteProductItem(id);
-      if (res.success) {
-        refreshProducts();
-        setToastMsg({ type: "success", text: `Deleted "${itemTitle}" successfully!` });
-      } else {
-        setToastMsg({ type: "error", text: "Failed to delete item." });
-      }
+  // Delete — open confirm modal
+  const handleDelete = (id: string, itemTitle: string) => {
+    setConfirmDeleteId(id);
+    setConfirmDeleteTitle(itemTitle);
+  };
+
+  // Perform actual delete after confirm
+  const performDelete = async () => {
+    if (!confirmDeleteId) return;
+    const id = confirmDeleteId;
+    const title = confirmDeleteTitle;
+    setConfirmDeleteId(null);
+    setConfirmDeleteTitle("");
+    const res = await deleteProductItem(id);
+    if (res.success) {
+      refreshProducts();
+      setToastMsg({ type: "success", text: `🗑️ "${title}" deleted successfully!` });
+    } else {
+      setToastMsg({ type: "error", text: "Failed to delete item." });
     }
   };
 
@@ -783,6 +796,51 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+      {/* 🗑️ Confirm Delete Modal */}
+      {confirmDeleteId && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)" }}
+          onClick={() => { setConfirmDeleteId(null); setConfirmDeleteTitle(""); }}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl border border-[#D8E3EC] max-w-sm w-full p-7 flex flex-col items-center gap-5 text-center animate-fade-in-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Red icon */}
+            <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center">
+              <Trash2 className="w-8 h-8 text-rose-600" />
+            </div>
+
+            {/* Text */}
+            <div>
+              <h3 className="font-heading text-xl font-bold text-[#182b3f] mb-2">Delete Permanently?</h3>
+              <p className="text-[#50606c] text-sm leading-relaxed">
+                Are you sure you want to delete<br />
+                <span className="font-extrabold text-[#182b3f]">"{confirmDeleteTitle}"</span><br />
+                from your store? This cannot be undone.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 w-full">
+              <button
+                onClick={() => { setConfirmDeleteId(null); setConfirmDeleteTitle(""); }}
+                className="flex-1 py-3 px-4 rounded-2xl bg-[#f3ede9] hover:bg-[#e8e0d5] text-[#182b3f] font-bold text-sm transition-colors border border-[#D8E3EC]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={performDelete}
+                className="flex-1 py-3 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm transition-colors shadow-md flex items-center justify-center gap-2 active:scale-95"
+              >
+                <Trash2 className="w-4 h-4" />
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
