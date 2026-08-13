@@ -701,10 +701,10 @@ export default function HomePage() {
                   <button
                     onClick={() => setFrameStyle("gold-luxury")}
                     className={`px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all ${
-                      frameStyle === "gold-luxury" ? "bg-amber-600 text-white shadow-sm" : "text-[#50606c]"
+                      frameStyle === "gold-luxury" ? "bg-neutral-900 text-white shadow-sm" : "text-[#50606c]"
                     }`}
                   >
-                    ✨ Gold
+                    ⬛ Black
                   </button>
                   <button
                     onClick={() => setFrameStyle("modern-white")}
@@ -845,7 +845,7 @@ export default function HomePage() {
                           : "p-2 sm:p-2.5 border-4 sm:border-8"
                       }`
                     : frameStyle === "gold-luxury"
-                    ? `bg-amber-400 border-amber-500 shadow-amber-600/80 ${
+                    ? `bg-neutral-900 border-neutral-800 shadow-neutral-950/80 ${
                         artScalePercent <= 12
                           ? "p-0.5 border-2"
                           : artScalePercent <= 24
