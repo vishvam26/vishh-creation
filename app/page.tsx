@@ -163,6 +163,7 @@ export default function HomePage() {
     if (!matchesSearch) return false;
     if (selectedCategory === "All Collections" || selectedCategory === "All") return true;
     if (selectedCategory === "Instagram Reels") return item.category === "Instagram Reels" || Boolean(item.instagram_url);
+    if (selectedCategory === "Crochet") return item.category === "Crochet Flowers" || item.category === "Crochet Plushies" || item.category === "Crochet";
     return item.category === selectedCategory;
   });
 
@@ -188,8 +189,7 @@ export default function HomePage() {
   const categoriesList = [
     "All Collections",
     "Original Paintings",
-    "Crochet Flowers",
-    "Crochet Plushies",
+    "Crochet",
     "Custom Keychains",
     "Gift Hampers",
     "Instagram Reels",
@@ -220,20 +220,9 @@ export default function HomePage() {
                   : "bg-white text-[#182b3f] hover:bg-[#d1e2ef] border-[#D8E3EC]"
               }`}
             >
-              {cat === "Instagram Reels" ? "🎬 Instagram Reels" : cat}
+              {cat === "Instagram Reels" ? "🎬 Instagram Reels" : cat === "Crochet" ? "🧶 Crochet" : cat}
             </button>
           ))}
-          <button
-            type="button"
-            onClick={() =>
-              openVisualizer(
-                heroPhoto || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop"
-              )
-            }
-            className="text-xs font-bold px-4 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 !text-white transition-colors border border-emerald-800 whitespace-nowrap flex items-center gap-1.5 shadow-sm"
-          >
-            <span className="!text-white font-bold">🖼️ Room Wall Visualizer</span>
-          </button>
         </div>
       </section>
 
@@ -1013,7 +1002,7 @@ export default function HomePage() {
               const isVideoReel = selectedProduct.category === "Instagram Reels" || Boolean(igInfo && igInfo.type === "reel");
               const targetIgUrl = igInfo?.shortcode
                 ? `https://www.instagram.com/p/${igInfo.shortcode}/`
-                : (selectedProduct.category === "Crochet Flowers" || selectedProduct.category === "Crochet Plushies" ? SITE_CONFIG.crochetInstagramUrl : SITE_CONFIG.artInstagramUrl);
+                : (selectedProduct.category === "Crochet Flowers" || selectedProduct.category === "Crochet Plushies" || selectedProduct.category === "Crochet" ? SITE_CONFIG.crochetInstagramUrl : SITE_CONFIG.artInstagramUrl);
 
               return (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-center">
