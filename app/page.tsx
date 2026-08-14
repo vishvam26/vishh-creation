@@ -1062,17 +1062,6 @@ export default function HomePage() {
 
                         <button
                           onClick={() => {
-                            const artPhoto = selectedProduct.image_url;
-                            setSelectedProduct(null);
-                            openVisualizer(artPhoto);
-                          }}
-                          className="px-3 py-0.5 rounded-full bg-white hover:bg-slate-50 text-[#182b3f] text-[10px] font-bold border border-[#D8E3EC] transition-colors shadow-sm flex items-center gap-1"
-                        >
-                          <span>🖼️ Try on Room Wall</span>
-                        </button>
-
-                        <button
-                          onClick={() => {
                             navigator.clipboard?.writeText(window.location.href);
                             alert(`Link copied to clipboard for "${selectedProduct.title}"!`);
                           }}
