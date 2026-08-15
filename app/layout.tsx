@@ -19,11 +19,28 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="alternate icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#182b3f" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="VISHH CREATION" />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
         <script src="https://cdn.tailwindcss.com"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(
+                  function(reg) { console.log('PWA ServiceWorker registered with scope:', reg.scope); },
+                  function(err) { console.error('PWA ServiceWorker registration failed:', err); }
+                );
+              });
+            }
+          `
+        }} />
       </head>
       <body className="font-body-md text-body-md antialiased overflow-x-hidden bg-[#fef8f4] text-[#1d1b19] min-h-screen flex flex-col">
         {/* Header (Matching Screenshot 2) */}
