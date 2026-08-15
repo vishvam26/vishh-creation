@@ -560,8 +560,7 @@ export default function AdminDashboardPage() {
                     className="w-full bg-slate-50 border border-[#D8E3EC] rounded-2xl p-3 text-sm text-[#182b3f] outline-none focus:bg-white focus:border-[#182b3f] focus:ring-2 focus:ring-[#182b3f]/20 transition-all font-medium"
                   >
                     <option value="Original Paintings">Original Paintings</option>
-                    <option value="Crochet Flowers">Crochet Flowers</option>
-                    <option value="Crochet Plushies">Crochet Plushies</option>
+                    <option value="Crochet">Crochet</option>
                     <option value="Custom Keychains">Custom Keychains</option>
                     <option value="Gift Hampers">Gift Hampers</option>
                     <option value="Instagram Reels">🎬 Instagram Reels</option>

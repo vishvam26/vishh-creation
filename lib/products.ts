@@ -33,22 +33,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     title: "Handmade Floral Crochet Blanket & Plush",
     description: "Cozy handmade floral crochet throw blanket with matching plushie. Premium cotton yarn with vibrant non-fading colors.",
     price: 1850,
-    category: "Crochet Flowers",
+    category: "Crochet",
     image_url: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?q=80&w=800&auto=format&fit=crop",
     is_available: true,
     is_featured: false,
     created_at: new Date(Date.now() - 86400000 * 1).toISOString(),
-  },
-  {
-    id: "550e8400-e29b-41d4-a716-446655440002",
-    title: "Boho Chic Crochet Plushies & Bags",
-    description: "Stylish eco-friendly tote bag woven with sturdy natural cotton cord. Features sturdy handles and solid inner lining.",
-    price: 1290,
-    category: "Crochet Plushies",
-    image_url: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=800&auto=format&fit=crop",
-    is_available: true,
-    is_featured: false,
-    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
@@ -102,7 +91,8 @@ export function getLocalProducts(): Product[] {
   try {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved) as Product[];
+      return parsed.filter((item) => item.id !== "550e8400-e29b-41d4-a716-446655440002");
     }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
     return INITIAL_PRODUCTS;

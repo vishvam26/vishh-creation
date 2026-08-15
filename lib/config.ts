@@ -16,8 +16,7 @@ export const SITE_CONFIG = {
   categories: [
     "All Collections",
     "Original Paintings",
-    "Crochet Flowers",
-    "Crochet Plushies",
+    "Crochet",
     "Custom Keychains",
     "Gift Hampers",
     "Instagram Reels",

@@ -26,42 +26,8 @@ export default function RootLayout({
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
       <body className="font-body-md text-body-md antialiased overflow-x-hidden bg-[#fef8f4] text-[#1d1b19] min-h-screen flex flex-col">
-        {/* Top Announcement Bar (Responsive across Mobile, Tablet, Laptop) */}
-        <div className="bg-[#2f4156] text-[#9aadc6] py-1.5 px-3 sm:px-6 text-xs font-medium flex justify-between items-center sticky top-0 z-[60] shadow-sm">
-          <div className="max-w-[1600px] w-full mx-auto flex items-center justify-between">
-            <span className="text-white font-semibold flex items-center gap-1.5 text-[11px] sm:text-xs">
-              <span className="text-amber-400">✨</span> Handmade Brand by Vishva <span className="text-rose-400">❤️</span>
-            </span>
-            <div className="flex items-center gap-3 text-[11px] sm:text-xs">
-              <a
-                className="hidden md:inline-flex hover:text-white transition-colors items-center gap-1 text-white/90"
-                href={SITE_CONFIG.artInstagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>🎨 Art: @{SITE_CONFIG.artInstagram}</span>
-              </a>
-              <a
-                className="hidden md:inline-flex hover:text-white transition-colors items-center gap-1 text-white/90"
-                href={SITE_CONFIG.crochetInstagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>🧶 Crochet: @{SITE_CONFIG.crochetInstagram}</span>
-              </a>
-              <Link
-                className="hover:text-white font-semibold text-white/90 border-l border-white/20 pl-2.5 flex items-center gap-1"
-                href="/admin"
-              >
-                <span className="material-symbols-outlined text-xs">lock</span>
-                <span>Store Login</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-
         {/* Header (Matching Screenshot 2) */}
-        <header className="glass-header sticky top-[36px] w-full z-50 py-3.5 px-4 md:px-8 border-b border-[#D8E3EC]">
+        <header className="glass-header sticky top-0 w-full z-50 py-3.5 px-4 md:px-8 border-b border-[#D8E3EC]">
           <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
             {/* Logo & Brand Name */}
             <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
