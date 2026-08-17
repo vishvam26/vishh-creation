@@ -1,5 +1,5 @@
 export const SITE_CONFIG = {
-  brandName: "VISHH CREATION",
+  brandName: "Vish♡Yi",
   heroTitle: "Handcrafted Treasures",
   heroSubtitle: "By Vish Creation",
   tagline: "'Crafted by hand just for you'",

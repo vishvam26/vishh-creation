@@ -1,5 +1,5 @@
 "use client";
-// Official VISHH CREATION deployment trigger sync
+// Official Vish♡Yi deployment trigger sync
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -414,7 +414,7 @@ export default function AdminDashboardPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#2f4156] text-white text-xs font-bold uppercase tracking-wider mb-1.5 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>VISHH CREATION Studio Manager</span>
+            <span>Vish♡Yi Studio Manager</span>
           </div>
           <h1 className="font-heading text-2xl sm:text-4xl font-bold text-[#182b3f]">
             Art &amp; Crochet Admin Dashboard

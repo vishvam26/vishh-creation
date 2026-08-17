@@ -234,12 +234,13 @@ export default function HomePage() {
             </div>
 
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold text-[#182b3f] leading-[1.15] tracking-tight">
-              Handcrafted Treasures <br />
-              <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
+              Welcome To My Art - House <br />
             </h1>
 
             <p className="text-[#50606c] text-sm sm:text-base max-w-xl leading-relaxed">
-              Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
+              Original paintings &amp; custom crochet &amp; clay creations.
+              <br />
+              Simple, soulful and thoughtfully made.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
@@ -347,10 +348,10 @@ export default function HomePage() {
       <section className="bg-gradient-to-b from-[#f8f2ee] to-[#f3ede9] py-6 sm:py-8 lg:py-5 px-4 sm:px-8 rounded-3xl border border-[#D8E3EC] shadow-sm text-center relative overflow-hidden">
         <div className="max-w-2xl mx-auto space-y-2 mb-4 lg:mb-3">
           <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#567c8d] flex items-center justify-center gap-1">
-            <span>✨</span> INTERACTIVE 3D ART GALLERY
+            <span>✨</span> Curated With Intention
           </span>
           <h2 className="font-heading text-3xl sm:text-5xl lg:text-4xl font-bold text-[#182b3f]">
-            Explore Masterpiece Gallery
+            EXPLORE  ART & CROCHET
           </h2>
           <p className="text-[#50606c] text-xs sm:text-sm">
             Swipe left or right to experience the 3D curved gallery. Tap any slide to open HD zoom &amp; ordering!
@@ -508,10 +509,10 @@ export default function HomePage() {
               ARTISAN COLLECTION
             </span>
             <h2 className="font-heading text-2xl sm:text-4xl font-bold text-[#182b3f]">
-              Featured Goods by Vish Creation
+              Crafted By Hand Just For You
             </h2>
             <p className="text-xs text-[#50606c] mt-0.5 flex items-center gap-1">
-              <span>⚡ Direct Instagram DM &amp; Share buttons available on each product!</span>
+              <span>⚡Wed Love To Talk Art . Catch Us On Insagram DM.</span>
             </p>
           </div>
 
@@ -552,11 +553,8 @@ export default function HomePage() {
 
             {/* Brand Title & Tagline */}
             <h1 className="font-heading text-2xl sm:text-4xl font-extrabold text-[#182b3f] tracking-tight mb-2">
-              VISHH CREATION
+              Vish♡Yi
             </h1>
-            <p className="text-xs sm:text-sm font-serif italic text-[#567c8d] max-w-sm leading-relaxed">
-              Crafting bespoke canvas paintings &amp; handcrafted crochet treasures with love...
-            </p>
 
             {/* Luxury Progress Bar */}
             <div className="w-48 sm:w-64 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-6 relative border border-slate-300 shadow-inner">
@@ -564,7 +562,7 @@ export default function HomePage() {
             </div>
 
             <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-4 flex items-center gap-1.5">
-              <span className="animate-spin">✨</span> Loading Handcrafted Treasures...
+              <span className="animate-spin">✨</span> Loading ...
             </span>
           </div>
         ) : filteredProducts.length === 0 ? (
@@ -702,11 +700,11 @@ export default function HomePage() {
           </div>
 
           <h2 className="font-heading text-2xl sm:text-4xl font-bold text-[#182b3f]">
-            Personalize Your Gift with Custom Names &amp; Photos
+            Looking For Something Custom ?
           </h2>
 
           <p className="text-[#50606c] text-xs sm:text-sm leading-relaxed">
-            Send custom photos or names directly to Vishva on Instagram DM (@{SITE_CONFIG.artInstagram} or @{SITE_CONFIG.crochetInstagram}) to create your customized gift!
+            Have A Unique Vision ? Create Custom Paintings, Crochet Pieces, Air Dry Clay Keychains. You Can Also Shop Ready To Buy Creations Directly. Just Dm Me!!
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-3">

@@ -22,7 +22,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#182b3f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="VISHH CREATION" />
+        <meta name="apple-mobile-web-app-title" content="Vish♡Yi" />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
@@ -50,15 +50,15 @@ export default function RootLayout({
               <div className="w-10 h-10 rounded-full bg-[#F5EFEB] border-2 border-[#5D3264] flex items-center justify-center shadow-sm relative overflow-hidden group-hover:scale-105 transition-transform flex-shrink-0">
                 <img
                   src="/icon-192.png"
-                  alt="VISHH CREATION Logo"
+                  alt="Vish♡Yi Logo"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div>
                 <img
                   src="/brand-text.png"
-                  alt="ViSh❤Yi"
-                  className="h-10 sm:h-15 w-auto object-contain"
+                  alt="Vish♡Yi"
+                  className="h-9 sm:h-12 w-auto object-contain"
                 />
               </div>
             </Link>
@@ -117,7 +117,7 @@ export default function RootLayout({
           <div className="max-w-[1600px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-left">
             <div>
               <h4 className="font-heading text-xl font-bold text-white mb-4">
-                VISHH CREATION
+                Vish♡Yi
               </h4>
               <p className="text-xs text-white/70 leading-relaxed mb-4">
                 Crafted for the Modern Artisan. Elevating spaces with authentic handmade luxury.
@@ -169,7 +169,7 @@ export default function RootLayout({
           </div>
 
           <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-6 md:px-12 border-t border-white/20 pt-6 text-center text-xs text-white/50">
-            © {new Date().getFullYear()} VISHH CREATION. All Rights Reserved. Crafted for the Modern Artisan by Vishva ❤️
+            © {new Date().getFullYear()} Vish♡Yi. All Rights Reserved. Crafted for the Modern Artisan by Vishva ❤️
           </div>
         </footer>
       </body>

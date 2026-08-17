@@ -21,11 +21,8 @@ export default function Loading() {
 
       {/* Brand Title & Tagline */}
       <h1 className="font-heading text-2xl sm:text-4xl font-extrabold text-[#182b3f] tracking-tight mb-2">
-        VISHH CREATION
+        VISH-ÝI
       </h1>
-      <p className="text-xs sm:text-sm font-serif italic text-[#567c8d] max-w-sm">
-        Crafting bespoke canvas paintings &amp; handcrafted crochet treasures with love...
-      </p>
 
       {/* Luxury Progress Bar */}
       <div className="w-48 sm:w-64 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-6 relative border border-slate-300 shadow-inner">
