@@ -37,6 +37,7 @@ import {
   Video,
   RefreshCw,
   UserCheck,
+  Edit,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -81,6 +82,33 @@ export default function AdminDashboardPage() {
   // Confirm Delete Modal State
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [confirmDeleteTitle, setConfirmDeleteTitle] = useState<string>("");
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+
+  const handleStartEdit = (item: Product) => {
+    setEditingProductId(item.id);
+    setTitle(item.title);
+    setDescription(item.description);
+    setPrice(item.price);
+    setCategory(item.category);
+    setIsAvailable(item.is_available);
+    setIsFeatured(item.is_featured || false);
+    setImagePreview(item.image_url);
+    setInstagramUrl(item.instagram_url || "");
+    setUploadMode(item.instagram_url ? "instagram" : "photo");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProductId(null);
+    setTitle("");
+    setDescription("");
+    setPrice("");
+    setImagePreview(null);
+    setInstagramUrl("");
+    setInstaInfo(null);
+    setIsAvailable(true);
+    setIsFeatured(false);
+  };
 
   // Load products & artist profile from Supabase
   const refreshProducts = async () => {
@@ -225,35 +253,59 @@ export default function AdminDashboardPage() {
         instaInfo?.proxyImageUrl ||
         "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=800&auto=format&fit=crop";
 
-      const res = await createProductItem({
-        title,
-        description,
-        price: Number(price),
-        category: category,
-        image_url: finalImage,
-        instagram_url: instagramUrl ? instagramUrl : undefined,
-        is_available: isAvailable,
-        is_featured: isFeatured,
-      });
-
-      if (res.success) {
-        setToastMsg({
-          type: "success",
-          text: `🎉 "${res.product.title}" published successfully to main website!`,
+      if (editingProductId) {
+        const res = await updateProductItem(editingProductId, {
+          title,
+          description,
+          price: Number(price),
+          category: category,
+          image_url: finalImage,
+          instagram_url: instagramUrl ? instagramUrl : undefined,
+          is_available: isAvailable,
+          is_featured: isFeatured,
         });
 
-        // Reset form
-        setTitle("");
-        setDescription("");
-        setPrice("");
-        setImagePreview(null);
-        setInstagramUrl("");
-        setInstaInfo(null);
-        setIsAvailable(true);
-        setIsFeatured(false);
-        refreshProducts();
+        if (res.success) {
+          setToastMsg({
+            type: "success",
+            text: `🎉 "${title}" updated successfully!`,
+          });
+          handleCancelEdit();
+          refreshProducts();
+        } else {
+          setToastMsg({ type: "error", text: "Failed to update item." });
+        }
       } else {
-        setToastMsg({ type: "error", text: res.message || "Failed to publish item." });
+        const res = await createProductItem({
+          title,
+          description,
+          price: Number(price),
+          category: category,
+          image_url: finalImage,
+          instagram_url: instagramUrl ? instagramUrl : undefined,
+          is_available: isAvailable,
+          is_featured: isFeatured,
+        });
+
+        if (res.success) {
+          setToastMsg({
+            type: "success",
+            text: `🎉 "${res.product.title}" published successfully to main website!`,
+          });
+
+          // Reset form
+          setTitle("");
+          setDescription("");
+          setPrice("");
+          setImagePreview(null);
+          setInstagramUrl("");
+          setInstaInfo(null);
+          setIsAvailable(true);
+          setIsFeatured(false);
+          refreshProducts();
+        } else {
+          setToastMsg({ type: "error", text: res.message || "Failed to publish item." });
+        }
       }
     } catch (err: any) {
       setToastMsg({ type: "error", text: err.message || "Upload error." });
@@ -428,7 +480,7 @@ export default function AdminDashboardPage() {
               <div className="flex items-center gap-2">
                 <PlusCircle className="w-5 h-5 text-[#182b3f]" />
                 <h2 className="font-heading text-xl font-bold text-[#182b3f]">
-                  Publish Creation
+                  {editingProductId ? "Edit Creation" : "Publish Creation"}
                 </h2>
               </div>
             </div>
@@ -562,8 +614,6 @@ export default function AdminDashboardPage() {
                     <option value="Original Paintings">Original Paintings</option>
                     <option value="Crochet">Crochet</option>
                     <option value="Custom Keychains">Custom Keychains</option>
-                    <option value="Gift Hampers">Gift Hampers</option>
-                    <option value="Instagram Reels">🎬 Instagram Reels</option>
                   </select>
                 </div>
 
@@ -614,23 +664,34 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-[#182b3f] hover:bg-[#111f2e] text-white font-bold py-3.5 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-95 disabled:opacity-70"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Publishing to Website...</span>
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <UploadCloud className="w-4 h-4" />
-                    <span>Publish to Main Website</span>
-                  </span>
+              <div className="flex gap-3">
+                {editingProductId && (
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="flex-1 py-3.5 px-4 rounded-2xl bg-[#f3ede9] hover:bg-[#e8e0d5] text-[#182b3f] font-bold text-sm transition-colors border border-[#D8E3EC]"
+                  >
+                    Cancel
+                  </button>
                 )}
-              </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-[2] bg-[#182b3f] hover:bg-[#111f2e] text-white font-bold py-3.5 px-6 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-sm active:scale-95 disabled:opacity-70"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>{editingProductId ? "Saving Changes..." : "Publishing to Website..."}</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <UploadCloud className="w-4 h-4" />
+                      <span>{editingProductId ? "Save Changes" : "Publish to Main Website"}</span>
+                    </span>
+                  )}
+                </button>
+              </div>
             </form>
           </div>
 
@@ -789,6 +850,18 @@ export default function AdminDashboardPage() {
                         }`}
                       >
                         {item.is_available ? "In Stock" : "Sold"}
+                      </button>
+
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => handleStartEdit(item)}
+                        className={`bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1 shadow-sm ${
+                          editingProductId === item.id ? "ring-2 ring-indigo-500 bg-indigo-100" : ""
+                        }`}
+                        title="Edit creation details"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                        <span>EDIT</span>
                       </button>
 
                       {/* Prominent Red Delete Button */}

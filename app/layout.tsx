@@ -55,12 +55,11 @@ export default function RootLayout({
                 />
               </div>
               <div>
-                <h1 className="font-heading text-lg sm:text-xl font-bold text-[#182b3f] leading-none tracking-wide">
-                  VISHH CREATION
-                </h1>
-                <p className="text-[11px] text-[#50606c] italic mt-0.5 font-serif">
-                  "Crafted by hand just for you"
-                </p>
+                <img
+                  src="/brand-text.png"
+                  alt="ViSh❤Yi"
+                  className="h-10 sm:h-15 w-auto object-contain"
+                />
               </div>
             </Link>
 

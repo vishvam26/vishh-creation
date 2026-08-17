@@ -4,11 +4,15 @@ import { Sparkles, Palette } from "lucide-react";
 
 export default function Loading() {
   return (
-    <div className="fixed inset-0 z-[200] bg-[#f8f2ee] flex flex-col items-center justify-center p-6 text-center select-none">
+    <div className="fixed -inset-10 z-[9999] bg-[#f8f2ee] flex flex-col items-center justify-center p-6 text-center select-none">
       {/* Animated Brand Emblem */}
-      <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-white shadow-xl border border-[#D8E3EC] flex items-center justify-center relative animate-bounce">
-          <Palette className="w-10 h-10 text-[#182b3f] animate-pulse" />
+      <div className="relative mb-6 animate-bounce">
+        <div className="w-20 h-20 rounded-full bg-white shadow-xl border-2 border-[#5D3264] flex items-center justify-center relative">
+          <img
+            src="/icon-192.png"
+            alt="Loading..."
+            className="w-full h-full object-cover rounded-full"
+          />
           <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-amber-400 text-stone-900 font-bold text-xs flex items-center justify-center shadow-md animate-ping">
             ✨
           </span>

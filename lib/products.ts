@@ -409,9 +409,40 @@ export async function updateProductItem(
   updates: Partial<Product>
 ): Promise<{ success: boolean; isCloud: boolean }> {
   const supabase = getSupabase();
+  let finalImageUrl = updates.image_url;
+
   if (isSupabaseConfigured() && supabase) {
     try {
-      const { error } = await supabase.from("products").update(updates).eq("id", id);
+      if (updates.image_url && updates.image_url.startsWith("data:image/")) {
+        const imageBlob = dataURLtoBlob(updates.image_url);
+        const fileName = `${id}.jpg`;
+
+        const { data: storageData, error: storageError } = await supabase.storage
+          .from("product-images")
+          .upload(fileName, imageBlob, {
+            contentType: "image/jpeg",
+            upsert: true,
+          });
+
+        if (!storageError && storageData) {
+          const { data: publicUrlData } = supabase.storage
+            .from("product-images")
+            .getPublicUrl(fileName);
+
+          if (publicUrlData?.publicUrl) {
+            finalImageUrl = publicUrlData.publicUrl;
+          }
+        } else {
+          console.warn("Storage upload note (proceeding with row update):", storageError);
+        }
+      }
+
+      const payload = { ...updates };
+      if (finalImageUrl) {
+        payload.image_url = finalImageUrl;
+      }
+
+      const { error } = await supabase.from("products").update(payload).eq("id", id);
       if (!error) return { success: true, isCloud: true };
     } catch (err) {
       console.error("Supabase update error:", err);
@@ -419,7 +450,15 @@ export async function updateProductItem(
   }
 
   const localList = getLocalProducts();
-  const updatedList = localList.map((item) => (item.id === id ? { ...item, ...updates } : item));
+  const updatedList = localList.map((item) =>
+    item.id === id
+      ? {
+          ...item,
+          ...updates,
+          ...(finalImageUrl ? { image_url: finalImageUrl } : {}),
+        }
+      : item
+  );
   saveLocalProducts(updatedList);
   return { success: true, isCloud: false };
 }

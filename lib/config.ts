@@ -18,8 +18,6 @@ export const SITE_CONFIG = {
     "Original Paintings",
     "Crochet",
     "Custom Keychains",
-    "Gift Hampers",
-    "Instagram Reels",
   ] as const,
 };
 

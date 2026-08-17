@@ -12,6 +12,9 @@ import {
   ChevronRight,
   RefreshCw,
   Lock,
+  ZoomIn,
+  ZoomOut,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -111,6 +114,22 @@ export default function HomePage() {
     loadData();
   }, []);
 
+  // Prevent background scrolling and subpixel scrollbar leaks when modals are active
+  useEffect(() => {
+    if (selectedProduct || fullscreenPhotoUrl || showRoomVisualizer) {
+      document.documentElement.classList.add("modal-open");
+      document.body.classList.add("modal-open");
+    } else {
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
+    }
+    // Cleanup on unmount
+    return () => {
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
+    };
+  }, [selectedProduct, fullscreenPhotoUrl, showRoomVisualizer]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches[0]) {
       setTouchStart(e.touches[0].clientX);
@@ -191,8 +210,6 @@ export default function HomePage() {
     "Original Paintings",
     "Crochet",
     "Custom Keychains",
-    "Gift Hampers",
-    "Instagram Reels",
   ];
 
   const handlePrevCarousel = () => {
@@ -207,29 +224,10 @@ export default function HomePage() {
 
   return (
     <div className="space-y-6 lg:space-y-4">
-      <section className="bg-[#f8f2ee]/95 p-2.5 rounded-2xl border border-[#D8E3EC] shadow-sm">
-        <div className="flex items-center justify-start gap-2 overflow-x-auto pb-0.5 no-scrollbar">
-          {categoriesList.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`text-xs font-bold px-4 py-2 rounded-full transition-all whitespace-nowrap border ${
-                selectedCategory === cat
-                  ? "bg-[#182b3f] !text-white border-[#182b3f] shadow-md"
-                  : "bg-white text-[#182b3f] hover:bg-[#d1e2ef] border-[#D8E3EC]"
-              }`}
-            >
-              {cat === "Instagram Reels" ? "🎬 Instagram Reels" : cat === "Crochet" ? "🧶 Crochet" : cat}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-white/70 rounded-3xl p-5 sm:p-8 lg:p-5 border border-[#D8E3EC]/80 shadow-sm">
+      <section className="bg-white/70 rounded-3xl p-6 sm:p-10 lg:p-12 border border-[#D8E3EC]/80 shadow-sm">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Left: Text Content */}
-          <div className="w-full lg:w-[52%] flex flex-col justify-center items-start text-left space-y-4 sm:space-y-5">
+          <div className="w-full lg:w-[52%] flex flex-col justify-center items-start text-left space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D8E3EC] text-[#50606c] text-[10px] sm:text-xs font-semibold uppercase tracking-wider shadow-sm max-w-full text-center">
               <span className="text-amber-500">✨</span>
               <span>Handmade Artwork &amp; Crochet Creations by Vishva</span>
@@ -240,7 +238,7 @@ export default function HomePage() {
               <span className="italic font-serif font-normal text-[#2f4156]">By Vish Creation</span>
             </h1>
 
-            <p className="text-[#50606c] text-xs sm:text-sm md:text-base max-w-xl leading-relaxed">
+            <p className="text-[#50606c] text-sm sm:text-base max-w-xl leading-relaxed">
               Discover bespoke canvas paintings, everlasting crochet flower bouquets, soft amigurumi plushies, personalized resin keychains, and luxury gift hampers.
             </p>
 
@@ -276,7 +274,7 @@ export default function HomePage() {
 
           {/* Right: 🌸 Infinite Horizontal Photo Scroll Strip */}
           {products.filter(p => p.image_url).length >= 1 && (
-            <div className="w-full lg:w-[340px] flex-shrink-0 flex flex-col items-center justify-center gap-3 overflow-hidden py-2 lg:py-1">
+            <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col items-center justify-center gap-3 overflow-hidden py-2 lg:py-3">
 
               {/* Label */}
               <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest text-[#567c8d]">
@@ -290,8 +288,8 @@ export default function HomePage() {
                   {[...products.filter(p => p.image_url), ...products.filter(p => p.image_url)].map((p, i) => (
                     <div
                       key={i}
-                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[100px] lg:h-[100px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
-                      onClick={() => openVisualizer(p.image_url)}
+                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[120px] lg:h-[120px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
+                      onClick={() => setSelectedProduct(p)}
                     >
                       <img
                         src={p.image_url}
@@ -309,8 +307,8 @@ export default function HomePage() {
                   {[...products.filter(p => p.image_url).slice().reverse(), ...products.filter(p => p.image_url).slice().reverse()].map((p, i) => (
                     <div
                       key={i}
-                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[100px] lg:h-[100px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
-                      onClick={() => openVisualizer(p.image_url)}
+                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[120px] lg:h-[120px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
+                      onClick={() => setSelectedProduct(p)}
                     >
                       <img
                         src={p.image_url}
@@ -328,8 +326,8 @@ export default function HomePage() {
                   {[...products.filter(p => p.image_url), ...products.filter(p => p.image_url)].map((p, i) => (
                     <div
                       key={i}
-                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[100px] lg:h-[100px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
-                      onClick={() => openVisualizer(p.image_url)}
+                      className="flex-shrink-0 w-[110px] h-[110px] lg:w-[120px] lg:h-[120px] rounded-2xl overflow-hidden shadow-md border-2 border-white cursor-pointer group"
+                      onClick={() => setSelectedProduct(p)}
                     >
                       <img
                         src={p.image_url}
@@ -484,6 +482,25 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="bg-[#f8f2ee]/95 p-2.5 rounded-2xl border border-[#D8E3EC] shadow-sm">
+        <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-0.5 no-scrollbar">
+          {categoriesList.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`text-xs font-bold px-4 py-2 rounded-full transition-all whitespace-nowrap border ${
+                selectedCategory === cat
+                  ? "bg-[#182b3f] !text-white border-[#182b3f] shadow-md"
+                  : "bg-white text-[#182b3f] hover:bg-[#d1e2ef] border-[#D8E3EC]"
+              }`}
+            >
+              {cat === "Instagram Reels" ? "🎬 Instagram Reels" : cat === "Crochet" ? "🧶 Crochet" : cat}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section id="gallery" className="space-y-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#D8E3EC] pb-4">
           <div>
@@ -518,11 +535,15 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="fixed inset-0 z-[200] bg-[#f8f2ee] flex flex-col items-center justify-center p-6 text-center select-none animate-fade-in-up">
+          <div className="fixed -inset-10 z-[9999] bg-[#f8f2ee] flex flex-col items-center justify-center p-6 text-center select-none animate-fade-in-up">
             {/* Animated Brand Emblem */}
-            <div className="relative mb-6">
-              <div className="w-20 h-20 rounded-3xl bg-white shadow-xl border border-[#D8E3EC] flex items-center justify-center relative animate-bounce">
-                <span className="text-3xl animate-pulse">🎨</span>
+            <div className="relative mb-6 animate-bounce">
+              <div className="w-20 h-20 rounded-full bg-white shadow-xl border-2 border-[#5D3264] flex items-center justify-center relative">
+                <img
+                  src="/icon-192.png"
+                  alt="Loading..."
+                  className="w-full h-full object-cover rounded-full"
+                />
                 <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-amber-400 text-stone-900 font-bold text-xs flex items-center justify-center shadow-md animate-ping">
                   ✨
                 </span>
@@ -1147,48 +1168,48 @@ export default function HomePage() {
       {/* Fullscreen HD Original Uncropped Photo Lightbox Modal */}
       {fullscreenPhotoUrl && (
         <div
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 transition-all"
+          className="fixed -inset-2 z-[100] bg-[#0a0d14] flex flex-col justify-between p-6 sm:p-8 transition-all duration-300 animate-fade-in"
           onClick={() => {
             setFullscreenPhotoUrl(null);
             setZoomLevel(1);
           }}
         >
-          {/* Top Control Header */}
+          {/* Top Control Header - Floating Glassmorphic Panel */}
           <div
-            className="flex items-center justify-between w-full max-w-6xl mx-auto text-white pb-3 border-b border-white/20"
+            className="flex items-center justify-between w-full max-w-5xl mx-auto text-white backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl py-3 px-5 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div>
-              <span className="text-[10px] font-extrabold text-amber-400 uppercase tracking-widest block">
-                🔍 ORIGINAL FULL HD UNCROPPED VIEW
+              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block">
+                ✨ GALLERY ARCHIVE • ULTRA HD
               </span>
-              <h3 className="font-heading text-base sm:text-2xl font-bold text-white truncate max-w-xs sm:max-w-md">
+              <h3 className="font-heading text-lg sm:text-2xl font-bold text-white italic tracking-wide mt-0.5 max-w-xs sm:max-w-md truncate">
                 {fullscreenPhotoTitle || "Handcrafted Masterpiece"}
               </h3>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Zoom Buttons */}
-              <div className="flex items-center gap-1 bg-white/10 p-1 rounded-xl border border-white/20 text-xs">
+              {/* Zoom Buttons with Lucide Icons */}
+              <div className="flex items-center gap-1.5 bg-white/5 p-1 rounded-xl border border-white/10 text-xs">
                 <button
                   onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.25))}
-                  className="px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition-all active:scale-95 flex items-center justify-center"
                   title="Zoom Out"
                 >
-                  -
+                  <ZoomOut className="w-3.5 h-3.5" />
                 </button>
-                <span className="px-2 text-xs font-mono">{Math.round(zoomLevel * 100)}%</span>
+                <span className="px-2 text-xs font-mono select-none">{Math.round(zoomLevel * 100)}%</span>
                 <button
                   onClick={() => setZoomLevel((z) => Math.min(3, z + 0.25))}
-                  className="px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition-all active:scale-95 flex items-center justify-center"
                   title="Zoom In"
                 >
-                  +
+                  <ZoomIn className="w-3.5 h-3.5" />
                 </button>
                 {zoomLevel !== 1 && (
                   <button
                     onClick={() => setZoomLevel(1)}
-                    className="px-2 py-1 rounded-lg bg-amber-500 text-white font-bold text-[10px]"
+                    className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-stone-900 font-extrabold text-[10px] uppercase tracking-wider transition-colors"
                   >
                     Reset
                   </button>
@@ -1201,53 +1222,63 @@ export default function HomePage() {
                   setFullscreenPhotoUrl(null);
                   setZoomLevel(1);
                 }}
-                className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full text-xs font-bold transition-colors flex items-center gap-1 border border-white/30"
+                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-200 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1 border border-rose-500/30 shadow-md active:scale-95"
               >
-                ✕ Close
+                <X className="w-3.5 h-3.5" />
+                <span>Close</span>
               </button>
             </div>
           </div>
 
-          {/* Main Photo Viewing Canvas (True Aspect Ratio, Uncropped, Zoomable) */}
+          {/* Main Photo Viewing Canvas with Radial Ambient Glow */}
           <div
-            className="flex-1 w-full flex items-center justify-center overflow-auto py-4 cursor-zoom-in"
+            className="flex-1 w-full flex items-center justify-center overflow-auto no-scrollbar py-4 cursor-zoom-in relative"
             onClick={(e) => {
               e.stopPropagation();
               setZoomLevel((z) => (z === 1 ? 1.6 : 1));
             }}
           >
+            {/* Ambient Backlight Glow centered behind image */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
+              <div className="w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] rounded-full bg-gradient-to-r from-[#5D3264]/20 via-indigo-500/10 to-transparent blur-[120px] animate-pulse" />
+            </div>
+
             <img
               src={fullscreenPhotoUrl}
               alt={fullscreenPhotoTitle}
               style={{ transform: `scale(${zoomLevel})` }}
-              className="max-h-[80vh] max-w-[90vw] object-contain transition-transform duration-200 rounded-2xl shadow-2xl border border-white/10"
+              className="max-h-[75vh] max-w-[85vw] object-contain transition-transform duration-300 rounded-2xl shadow-[0_0_50px_rgba(93,50,100,0.35)] border-2 border-white/20 hover:border-white/30"
             />
           </div>
 
-          {/* Bottom Action Footer */}
+          {/* Bottom Action Footer - Floating Glassmorphic Panel */}
           <div
-            className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full max-w-6xl mx-auto pt-3 border-t border-white/20 text-white text-xs"
+            className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full max-w-5xl mx-auto backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl py-3 px-5 shadow-lg text-white text-xs"
             onClick={(e) => e.stopPropagation()}
           >
-            <span className="text-white/80 text-[11px] sm:text-xs">
+            <span className="text-white/70 text-[11px] sm:text-xs">
               ⚡ Showing original high-resolution uncropped upload. Tap image or use +/- to zoom.
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <a
                 href={SITE_CONFIG.artDmUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#2f4156] hover:bg-[#182b3f] text-white text-xs font-bold py-2 px-5 rounded-full border border-white/20 shadow-md"
+                className="bg-gradient-to-r from-[#2f4156] to-[#182b3f] hover:brightness-110 text-white text-xs font-bold py-2.5 px-5 rounded-xl border border-white/10 shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                style={{ textDecoration: "none" }}
               >
-                🎨 DM Art IG (@{SITE_CONFIG.artInstagram})
+                <span>🎨</span>
+                <span>DM Art IG (@{SITE_CONFIG.artInstagram})</span>
               </a>
               <a
                 href={SITE_CONFIG.crochetDmUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#567c8d] hover:bg-[#456574] text-white text-xs font-bold py-2 px-5 rounded-full border border-white/20 shadow-md"
+                className="bg-gradient-to-r from-[#567c8d] to-[#456574] hover:brightness-110 text-white text-xs font-bold py-2.5 px-5 rounded-xl border border-white/10 shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                style={{ textDecoration: "none" }}
               >
-                🧶 DM Crochet IG (@{SITE_CONFIG.crochetInstagram})
+                <span>🧶</span>
+                <span>DM Crochet IG (@{SITE_CONFIG.crochetInstagram})</span>
               </a>
             </div>
           </div>
