@@ -58,7 +58,7 @@ export default function RootLayout({
                 <img
                   src="/brand-text.png"
                   alt="Vish♡Yi"
-                  className="h-9 sm:h-12 w-auto object-contain"
+                  className="h-5 sm:h-8 w-auto object-contain"
                 />
               </div>
             </Link>
