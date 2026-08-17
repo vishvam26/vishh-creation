@@ -16,9 +16,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="alternate icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#182b3f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -48,30 +47,12 @@ export default function RootLayout({
           <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
             {/* Logo & Brand Name */}
             <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-              <div className="w-10 h-10 rounded-full bg-[#F5EFEB] border-2 border-[#D4AF37] flex items-center justify-center shadow-sm relative overflow-hidden group-hover:scale-105 transition-transform flex-shrink-0">
-                <svg
-                  viewBox="0 0 100 100"
-                  width="32"
-                  height="32"
-                  style={{ width: "32px", height: "32px", maxWidth: "32px", maxHeight: "32px" }}
-                >
-                  <g stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" opacity="0.95">
-                    <line x1="50" y1="6" x2="50" y2="94" />
-                    <line x1="6" y1="50" x2="94" y2="50" />
-                    <line x1="18" y1="18" x2="82" y2="82" />
-                    <line x1="18" y1="82" x2="82" y2="18" />
-                    <line x1="32" y1="10" x2="68" y2="90" />
-                    <line x1="10" y1="32" x2="90" y2="68" />
-                  </g>
-                  <path
-                    d="M36 32 L48 68 L68 26"
-                    fill="none"
-                    stroke="#8B2610"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+              <div className="w-10 h-10 rounded-full bg-[#F5EFEB] border-2 border-[#5D3264] flex items-center justify-center shadow-sm relative overflow-hidden group-hover:scale-105 transition-transform flex-shrink-0">
+                <img
+                  src="/icon-192.png"
+                  alt="VISHH CREATION Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <h1 className="font-heading text-lg sm:text-xl font-bold text-[#182b3f] leading-none tracking-wide">

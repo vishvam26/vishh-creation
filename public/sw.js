@@ -2,8 +2,9 @@ const CACHE_NAME = "vishh-creation-cache-v1";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
-  "/icon.svg",
-  "/favicon.svg"
+  "/favicon.png",
+  "/icon-192.png",
+  "/icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {
