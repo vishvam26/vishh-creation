@@ -433,8 +433,7 @@ export async function updateProductItem(
             finalImageUrl = publicUrlData.publicUrl;
           }
         } else if (storageError) {
-          console.error("Storage upload error:", storageError);
-          return { success: false, isCloud: true, message: `Image upload failed: ${storageError.message}` };
+          console.warn("Storage upload error (proceeding with row update):", storageError);
         }
       }
 
