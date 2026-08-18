@@ -273,7 +273,7 @@ export default function AdminDashboardPage() {
           handleCancelEdit();
           refreshProducts();
         } else {
-          setToastMsg({ type: "error", text: "Failed to update item." });
+          setToastMsg({ type: "error", text: res.message || "Failed to update item." });
         }
       } else {
         const res = await createProductItem({

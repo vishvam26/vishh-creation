@@ -407,7 +407,7 @@ export async function createProductItem(
 export async function updateProductItem(
   id: string,
   updates: Partial<Product>
-): Promise<{ success: boolean; isCloud: boolean }> {
+): Promise<{ success: boolean; isCloud: boolean; message?: string }> {
   const supabase = getSupabase();
   let finalImageUrl = updates.image_url;
 
@@ -432,8 +432,9 @@ export async function updateProductItem(
           if (publicUrlData?.publicUrl) {
             finalImageUrl = publicUrlData.publicUrl;
           }
-        } else {
-          console.warn("Storage upload note (proceeding with row update):", storageError);
+        } else if (storageError) {
+          console.error("Storage upload error:", storageError);
+          return { success: false, isCloud: true, message: `Image upload failed: ${storageError.message}` };
         }
       }
 
@@ -443,9 +444,14 @@ export async function updateProductItem(
       }
 
       const { error } = await supabase.from("products").update(payload).eq("id", id);
-      if (!error) return { success: true, isCloud: true };
-    } catch (err) {
-      console.error("Supabase update error:", err);
+      if (error) {
+        console.error("Supabase update error:", error);
+        return { success: false, isCloud: true, message: error.message };
+      }
+      return { success: true, isCloud: true };
+    } catch (err: any) {
+      console.error("Supabase update exception:", err);
+      return { success: false, isCloud: true, message: err.message || "Update exception" };
     }
   }
 
@@ -463,14 +469,19 @@ export async function updateProductItem(
   return { success: true, isCloud: false };
 }
 
-export async function deleteProductItem(id: string): Promise<{ success: boolean; isCloud: boolean }> {
+export async function deleteProductItem(id: string): Promise<{ success: boolean; isCloud: boolean; message?: string }> {
   const supabase = getSupabase();
   if (isSupabaseConfigured() && supabase) {
     try {
       const { error } = await supabase.from("products").delete().eq("id", id);
-      if (!error) return { success: true, isCloud: true };
-    } catch (err) {
-      console.error("Supabase delete error:", err);
+      if (error) {
+        console.error("Supabase delete error:", error);
+        return { success: false, isCloud: true, message: error.message };
+      }
+      return { success: true, isCloud: true };
+    } catch (err: any) {
+      console.error("Supabase delete exception:", err);
+      return { success: false, isCloud: true, message: err.message || "Delete exception" };
     }
   }
 
