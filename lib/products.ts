@@ -442,7 +442,18 @@ export async function updateProductItem(
         payload.image_url = finalImageUrl;
       }
 
-      const { error } = await supabase.from("products").update(payload).eq("id", id);
+      let { error } = await supabase.from("products").update(payload).eq("id", id);
+
+      // Gracefully handle missing custom columns (like is_featured or instagram_url) in user's Supabase schema
+      if (error && (error.message?.includes("instagram_url") || error.message?.includes("is_featured") || error.message?.includes("schema cache"))) {
+        console.warn("Supabase table missing custom columns on update. Retrying update without them...");
+        delete payload.instagram_url;
+        delete payload.is_featured;
+
+        const { error: retryError } = await supabase.from("products").update(payload).eq("id", id);
+        error = retryError;
+      }
+
       if (error) {
         console.error("Supabase update error:", error);
         return { success: false, isCloud: true, message: error.message };
